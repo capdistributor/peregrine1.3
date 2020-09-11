@@ -1,0 +1,7 @@
+{
+  "name": "peregrine-express-v1.3",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}

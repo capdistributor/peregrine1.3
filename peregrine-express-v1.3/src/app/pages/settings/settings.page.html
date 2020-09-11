@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="saveSettingsToast()">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Settings</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="isLoaded" padding>
+  Enable the activities that you will be using in your daily upload.
+  <ion-list>
+    <ng-container *ngIf="activities">
+
+      <ion-item *ngFor="let key of keys">
+        <ion-label>{{ key | titlecase }}</ion-label>
+        <ion-toggle [(ngModel)]="activities[key]"></ion-toggle>
+      </ion-item>
+    </ng-container>
+  </ion-list>
+  <ion-button expand="block" (click)="saveSettingsToast()">Save Settings</ion-button>
+</ion-content>

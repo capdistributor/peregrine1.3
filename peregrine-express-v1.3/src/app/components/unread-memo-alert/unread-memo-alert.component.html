@@ -1,0 +1,6 @@
+<ion-button expand="block" color="" routerLink="/memo-list" *ngIf="!showAlert">
+  Company Alerts
+</ion-button>
+<ion-button expand="block" color="danger" routerLink="/memo-list" *ngIf="showAlert">
+  Unread Company Alert(s)
+</ion-button>

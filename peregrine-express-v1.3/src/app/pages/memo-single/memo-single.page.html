@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ (memo$ | async)?.subject }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  
+  <ion-card>
+
+    <ion-card-header>
+      <ion-card-subtitle>{{ (memo$ | async)?.date | date: 'MMM d, yyyy' }}</ion-card-subtitle>
+      <ion-card-title>{{ (memo$ | async)?.subject }}</ion-card-title>
+    </ion-card-header>
+    
+    <ion-card-content>
+
+        <p>{{ (memo$ | async)?.mainText }}</p>
+
+    </ion-card-content>
+    
+    <ion-card-content>
+
+        <p>I confirm that I have read and understand this material.</p>
+
+        <ion-button expand="block" (click)="submitConfirmed(memo)" [disabled]="isConfirmed | async">
+          Confirm
+        </ion-button>
+
+    </ion-card-content>
+  </ion-card>
+</ion-content>

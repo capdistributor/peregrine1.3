@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar>
+
+    <ion-buttons slot="end">
+      <ion-button routerLink="/instructions">
+        <ion-icon slot="icon-only" name="help"></ion-icon>
+      </ion-button>
+      <ion-button routerLink="/settings">
+        <ion-icon slot="icon-only" name="settings"></ion-icon>
+      </ion-button>
+      <ion-button (click)="confirmLogout()">
+        <ion-icon slot="icon-only" name="log-out"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>Peregrine Express</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+
+  <app-unread-memo-alert [showAlert]="unreadMemoStatus$ | async"></app-unread-memo-alert>
+
+  <ion-list>
+    <ion-list-header><h3>Previous Logs</h3></ion-list-header>
+    <ion-item *ngFor="let log of logList | async" routerLink="/edit-daily-log/{{log.id}}">
+      <ion-label>
+        <h2>{{ log.date.toString().substring(0, 10) }}</h2>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button routerLink="/create-daily-log">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+</ion-content>
