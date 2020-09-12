@@ -10,6 +10,7 @@ import { Observable, of } from 'rxjs';
 
 // need to import authservice, or do I?
 import { AuthService } from './auth.service';
+import { filter, switchMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -20,30 +21,13 @@ export class LogService {
 
   private logsCollection: AngularFirestoreCollection<any>;
   logs: Observable<any>;
+  
 
   constructor(
     private afAuth: AngularFireAuth,
     private firestore: AngularFirestore,
     public authService: AuthService
-  ) {
-    this.afAuth.authState.subscribe(user => {
-      if (user) {
-
-        console.log("user:", user);
-        this._userId = user.uid;
-
-        this.logList = this.firestore.collection(`/userProfile/${user.uid}/logList`,
-        ref =>
-          ref.orderBy('date', 'desc').limit(5)
-        );
-
-        console.log("loglist", this.logList);
-      }
-      else {
-        console.log("no user data");
-      }
-    });
-  }
+  ) {}
 
   async createLog(
     date: Date,
@@ -112,13 +96,25 @@ export class LogService {
     });
   }
 
+  // this is only called once, in memo-single.page.ts
   get userId(): Observable<string> {
-    console.log('getting userid', this._userId);
+    console.log('getting userid...', this._userId);
     return of(this._userId);
   }
 
-  getLogList(): AngularFirestoreCollection<any> {
-    return this.firestore.collection<any>(`/userProfile/${this._userId}/loglist/`);
+  getLogsCollection(userId) {
+    return this.firestore
+      .collection(`/userProfile/${userId}/logList`,
+        ref => ref.orderBy('date', 'desc').limit(5)
+      )
+      .valueChanges()
+  }
+
+  getLogList() {
+    return this.afAuth.authState.pipe(
+      filter(user => !!user),
+      switchMap(user => this.getLogsCollection(user.uid))
+    );
   }
 
   getLogDetail(logId: string): AngularFirestoreDocument<any> {

@@ -25,7 +25,7 @@ export class HomePage {
   ) {}
 
   ngOnInit() {
-    this.logList = this.logService.getLogList().valueChanges();
+    this.logList = this.logService.getLogList();
     this.initializeBackButtonCustomHandler();
   }
 
