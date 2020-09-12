@@ -8,7 +8,7 @@
 </ion-header>
 
 <ion-content>
-  <app-auth-form #signupForm (formSubmitted)=signupUser($event) [actionButtonText]="'Create Account'"></app-auth-form>
+  <app-auth-form #signupForm (formSubmitted)=signupUser($event) [actionButtonText]="'Create Account'" [isSignupPage]="true"></app-auth-form>
 
   <ion-button expand="block" fill="clear" routerLink="/login">
     I already have an account

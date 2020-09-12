@@ -28,7 +28,9 @@ export class AuthService {
 
   async signup(
     email: string,
-    password: string
+    password: string,
+    fullName: string,
+    city: string
   ): Promise<firebase.auth.UserCredential> {
     try {
       const newUserCredential: firebase.auth.UserCredential = await this.afAuth.createUserWithEmailAndPassword(
@@ -37,7 +39,7 @@ export class AuthService {
       );
       await this.firestore
         .doc(`userProfile/${newUserCredential.user.uid}`)
-        .set({ email });
+        .set({ email, fullName, city });
       return newUserCredential;
     } catch (error) {
       throw error;

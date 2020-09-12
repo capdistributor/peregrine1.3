@@ -13,6 +13,7 @@ export class AuthFormComponent implements OnInit {
   public authForm: FormGroup;
   @Input() actionButtonText: string;
   @Input() isPasswordResetPage = false;
+  @Input() isSignupPage = false;
   @Output() formSubmitted = new EventEmitter<any>();
 
   constructor(
@@ -22,7 +23,9 @@ export class AuthFormComponent implements OnInit {
   ) {
     this.authForm = this.formBuilder.group({
       email: ['', Validators.compose([Validators.required, Validators.email])],
-      password: ['', Validators.minLength(6)]
+      password: ['', Validators.minLength(6)],
+      fullName: ['', Validators.required],
+      city: ['', Validators.required]
     });
   }
 
@@ -35,7 +38,9 @@ export class AuthFormComponent implements OnInit {
       this.showLoading();
       const credentials: UserCredential = {
         email: authForm.value.email,
-        password: authForm.value.password
+        password: authForm.value.password,
+        fullName: authForm.value.fullName,
+        city: authForm.value.city
       };
       this.formSubmitted.emit(credentials);
     }

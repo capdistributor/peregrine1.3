@@ -14,7 +14,11 @@ export class ResetPasswordPage implements OnInit {
   @ViewChild(AuthFormComponent)
   resetPasswordForm: AuthFormComponent;
 
-  constructor(private authService: AuthService, private alertCtrl: AlertController, private router: Router) { }
+  constructor(
+    private authService: AuthService,
+    private alertCtrl: AlertController,
+    private router: Router
+  ) {}
 
   ngOnInit() {
   }
