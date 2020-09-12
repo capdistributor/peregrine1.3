@@ -32,7 +32,7 @@ export class EditDailyLogPage implements OnInit {
     public toastCtrl: ToastController,
     private settingsService: SettingsService
   ) {
-    this.logId = this.route.snapshot.paramMap.get('id');
+    this.logId = this.route.snapshot.paramMap.get('logId');
     this.log = this.logService.getLogDetail(this.logId).valueChanges();
 
     this.updateLogForm = this.formBuilder.group({

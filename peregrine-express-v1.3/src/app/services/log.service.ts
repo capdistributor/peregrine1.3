@@ -27,7 +27,22 @@ export class LogService {
     private afAuth: AngularFireAuth,
     private firestore: AngularFirestore,
     public authService: AuthService
-  ) {}
+  ) {
+    this.afAuth.authState.subscribe(user => {
+      if (user) {
+        console.log("user:", user);
+        this._userId = user.uid;
+
+        this.logList = this.firestore.collection(`/userProfile/${user.uid}/logList`,
+        ref =>
+          ref.orderBy('date', 'desc').limit(5)
+        );
+      }
+      else {
+        console.log("no user data");
+      }
+    });
+  }
 
   async createLog(
     date: Date,

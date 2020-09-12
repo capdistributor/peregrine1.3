@@ -5,7 +5,7 @@ import { EditDailyLogPage } from './edit-daily-log.page';
 
 const routes: Routes = [
   {
-    path: '',
+    path: ':logId',
     component: EditDailyLogPage
   }
 ];
