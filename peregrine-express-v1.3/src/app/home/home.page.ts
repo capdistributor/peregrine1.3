@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { LogService } from '../services/log.service';
 import { Observable, Subscription } from 'rxjs';
 import { MemoService } from '../services/memo.service';
 import { Platform } from '@ionic/angular';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -21,7 +22,8 @@ export class HomePage {
     private alertCtrl: AlertController,
     private logService: LogService,
     private memoService: MemoService,
-    private platform: Platform
+    private platform: Platform,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -73,7 +75,8 @@ export class HomePage {
 
   userLogout(): Promise<void> {
     return this.afAuth.signOut().then(() => {
-      // do redirect here
+      this.router.navigateByUrl('/login');
+      console.log('logging out');
     });
   }
 }

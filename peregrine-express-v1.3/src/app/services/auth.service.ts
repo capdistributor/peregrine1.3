@@ -50,7 +50,7 @@ export class AuthService {
     return this.afAuth.sendPasswordResetEmail(email);
   }
 
-  logout(): Promise<void> {
-    return this.afAuth.signOut();
-  }
+  // logout(): Promise<void> {
+  //   return this.afAuth.signOut();
+  // }
 }
