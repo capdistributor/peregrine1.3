@@ -72,6 +72,8 @@ export class HomePage {
   }
 
   userLogout(): Promise<void> {
-    return this.afAuth.signOut();
+    return this.afAuth.signOut().then(() => {
+      // do redirect here
+    });
   }
 }
