@@ -24,12 +24,17 @@ export class AuthFormComponent implements OnInit {
     this.authForm = this.formBuilder.group({
       email: ['', Validators.compose([Validators.required, Validators.email])],
       password: ['', Validators.minLength(6)],
-      fullName: ['', Validators.required],
-      city: ['', Validators.required]
+      fullName: [''],
+      city: ['']
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    if (this.isSignupPage) {
+      this.authForm.get('fullName').setValidators([Validators.required]);
+      this.authForm.get('city').setValidators([Validators.required]);
+    }
+  }
 
   submitCredentials(authForm: FormGroup): void {
     if (!authForm.valid) {
