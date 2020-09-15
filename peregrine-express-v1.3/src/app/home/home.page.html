@@ -23,7 +23,7 @@
 
   <ion-list>
     <ion-list-header><h3>Previous Logs</h3></ion-list-header>
-    <ion-item *ngFor="let log of logList | async" routerLink="/edit-daily-log/{{log.id}}">
+    <ion-item *ngFor="let log of logList$ | async" routerLink="/edit-daily-log/{{log.id}}">
       <ion-label>
         <h2>{{ log.date.toString().substring(0, 10) }}</h2>
       </ion-label>

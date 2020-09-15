@@ -6,6 +6,7 @@ import {
 } from '@angular/fire/firestore';
 import { Observable, of, Timestamp } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { AuthService } from './auth.service';
 
 export interface Memo {
   id: string;
@@ -31,12 +32,12 @@ export class MemoService {
 
   constructor(
     private firestore: AngularFirestore,
-    private afAuth: AngularFireAuth) {
+    private authService: AuthService) {
 
     this.memoList = this.firestore.collection(`/memos`,
     ref => ref.where('isArchived', '==', false).orderBy('date','desc'));
 
-    this.afAuth.authState.subscribe(user => {
+    this.authService.currentUser$.subscribe(user => {
       if (user) {
         this.userId = user.uid;
       }

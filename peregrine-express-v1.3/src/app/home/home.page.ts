@@ -1,24 +1,25 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
-import { AngularFireAuth } from '@angular/fire/auth';
 import { LogService } from '../services/log.service';
 import { Observable, Subscription } from 'rxjs';
 import { MemoService } from '../services/memo.service';
 import { Platform } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
 })
-export class HomePage {
-  public logList: Observable<any>;
+export class HomePage implements OnInit {
+  public logList$: Observable<any>;
   unreadMemoStatus$: Observable<boolean> = this.memoService.unconfirmedMemosExist();
   public unsubscribeBackEvent: Subscription;
 
   constructor(
-    private afAuth: AngularFireAuth,
+    private authService: AuthService,
     private alertCtrl: AlertController,
     private logService: LogService,
     private memoService: MemoService,
@@ -27,7 +28,10 @@ export class HomePage {
   ) {}
 
   ngOnInit() {
-    this.logList = this.logService.getLogList();
+    this.logList$ = this.logService.logList$
+      .pipe(
+        tap(l => console.log('logs:', l))
+      );
     this.initializeBackButtonCustomHandler();
   }
 
@@ -74,7 +78,7 @@ export class HomePage {
   }
 
   userLogout(): Promise<void> {
-    return this.afAuth.signOut().then(() => {
+    return this.authService.logout().then(() => {
       this.router.navigateByUrl('/login');
       console.log('logging out');
     });

@@ -10,38 +10,33 @@ import { Observable, of } from 'rxjs';
 
 // need to import authservice, or do I?
 import { AuthService } from './auth.service';
-import { filter, switchMap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LogService {
-  public logList: AngularFirestoreCollection<any>;
+  private userId$ = this.authService.currentUser$.pipe(
+    map((user) => user.uid),
+    tap((id) => (this._userId = id))
+  );
   private _userId: string;
 
-  private logsCollection: AngularFirestoreCollection<any>;
+  public logList$: Observable<any>;
+  private logListCollection: AngularFirestoreCollection<any>;
   logs: Observable<any>;
-  
 
   constructor(
-    private afAuth: AngularFireAuth,
     private firestore: AngularFirestore,
     public authService: AuthService
   ) {
-    this.afAuth.authState.subscribe(user => {
-      if (user) {
-        console.log("user:", user);
-        this._userId = user.uid;
-
-        this.logList = this.firestore.collection(`/userProfile/${user.uid}/logList`,
-        ref =>
-          ref.orderBy('date', 'desc').limit(5)
-        );
-      }
-      else {
-        console.log("no user data");
-      }
-    });
+    this.logList$ = this.userId$.pipe(
+      tap((id) => {
+        this.logListCollection = this.getLogsCollection(id);
+      }),
+      switchMap(() => this.logListCollection.valueChanges()),
+      tap((stuff) => console.log('stuff', stuff))
+    );
   }
 
   async createLog(
@@ -75,7 +70,7 @@ export class LogService {
     boeing: number = null,
     notes: string = null
   ): Promise<any> {
-    const newLogRef: firebase.firestore.DocumentReference = await this.logList.add({});
+    const newLogRef: firebase.firestore.DocumentReference = await this.logListCollection.add({});
 
     return newLogRef.update({
       date,
@@ -111,24 +106,9 @@ export class LogService {
     });
   }
 
-  // this is only called once, in memo-single.page.ts
-  get userId(): Observable<string> {
-    console.log('getting userid...', this._userId);
-    return of(this._userId);
-  }
-
-  getLogsCollection(userId) {
-    return this.firestore
-      .collection(`/userProfile/${userId}/logList`,
-        ref => ref.orderBy('date', 'desc').limit(5)
-      )
-      .valueChanges()
-  }
-
-  getLogList() {
-    return this.afAuth.authState.pipe(
-      filter(user => !!user),
-      switchMap(user => this.getLogsCollection(user.uid))
+  getLogsCollection(userId): AngularFirestoreCollection<any> {
+    return this.firestore.collection(`/userProfile/${userId}/logList`, (ref) =>
+      ref.orderBy('date', 'desc').limit(5)
     );
   }
 
@@ -137,16 +117,15 @@ export class LogService {
   }
 
   updateLog(logId, updateLogFormValue) {
-    return this.firestore.doc(`/userProfile/${this._userId}/logList/${logId}`).update(
-      updateLogFormValue
-    )
-    .then(function(res) {
-      console.log("Document successfully updated!", res);
-    });
+    return this.firestore
+      .doc(`/userProfile/${this._userId}/logList/${logId}`)
+      .update(updateLogFormValue)
+      .then(function (res) {
+        console.log('Document successfully updated!', res);
+      });
   }
 
   deleteLog(logId: string): Promise<any> {
-    return this.logList.doc(logId).delete();
+    return this.logListCollection.doc(logId).delete();
   }
-
 }

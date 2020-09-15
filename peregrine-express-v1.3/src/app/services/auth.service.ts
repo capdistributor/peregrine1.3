@@ -1,22 +1,30 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { first } from 'rxjs/operators';
+import { first, shareReplay, tap } from 'rxjs/operators';
 import 'firebase/firestore';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  public userId: string;
+  public currentUser;
+  public currentUser$: Observable<any>;
 
   constructor(
     private afAuth: AngularFireAuth,
     private firestore: AngularFirestore
-  ) {}
+  ) {
+    this.currentUser$ = this.afAuth.authState.pipe(
+      tap(user => this.currentUser = user),
+      tap(u => console.log('current user:', u)),
+      shareReplay(1)
+    );
+  }
 
   getUser(): Promise<firebase.User> {
-    return this.afAuth.authState.pipe(first()).toPromise();
+    return this.currentUser$.toPromise();
   }
 
   login(
@@ -50,7 +58,7 @@ export class AuthService {
     return this.afAuth.sendPasswordResetEmail(email);
   }
 
-  // logout(): Promise<void> {
-  //   return this.afAuth.signOut();
-  // }
+  logout(): Promise<void> {
+    return this.afAuth.signOut();
+  }
 }

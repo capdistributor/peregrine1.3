@@ -28,7 +28,7 @@ export class SignupPage implements OnInit {
         credentials.fullName,
         credentials.city
       );
-      this.authService.userId = userCredential.user.uid;
+      // this.authService.userId = userCredential.user.uid;
       await this.signupForm.hideLoading();
       this.router.navigateByUrl('home');
     } catch (error) {
