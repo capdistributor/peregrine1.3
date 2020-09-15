@@ -1,6 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MemoService } from '../../services/memo.service';
 import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-memo-list',
@@ -17,7 +18,10 @@ export class MemoListPage implements OnInit {
   }
 
   ngOnInit() {
-    this.memoList = this.memoService.getMemoList().valueChanges();
+    this.memoList = this.memoService.getMemoList().valueChanges()
+    .pipe(
+      tap(m => console.log('memos', m))
+    );
   }
 
 }

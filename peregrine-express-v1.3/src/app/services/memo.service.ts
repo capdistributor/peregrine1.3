@@ -34,8 +34,9 @@ export class MemoService {
     private firestore: AngularFirestore,
     private authService: AuthService) {
 
-    this.memoList = this.firestore.collection(`/memos`,
-    ref => ref.where('isArchived', '==', false).orderBy('date','desc'));
+    this.memoList = this.firestore.collection(`memos`,
+    ref => ref.where('isArchived', '==', false)
+    .orderBy('date', 'desc'));
 
     this.authService.currentUser$.subscribe(user => {
       if (user) {
