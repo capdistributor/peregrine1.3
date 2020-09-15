@@ -5,7 +5,7 @@ import { MemoSinglePage } from './memo-single.page';
 
 const routes: Routes = [
   {
-    path: '',
+    path: ':id',
     component: MemoSinglePage
   }
 ];
