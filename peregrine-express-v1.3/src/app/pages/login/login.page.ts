@@ -18,7 +18,6 @@ export class LoginPage implements OnInit {
   }
 
   async loginUser(credentials: UserCredential): Promise<void> {
-    console.log('hi steve');
     try {
       const UserCredential: firebase.auth.UserCredential = await this.authService.login(
         credentials.email,
@@ -26,7 +25,6 @@ export class LoginPage implements OnInit {
       );
       // this.authService.userId = UserCredential.user.uid;
       await this.loginForm.hideLoading();
-      console.log('going home?');
       this.router.navigateByUrl('home');
     } catch (error) {
       await this.loginForm.hideLoading();

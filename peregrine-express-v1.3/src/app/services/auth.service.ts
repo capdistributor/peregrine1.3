@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { first, shareReplay, tap } from 'rxjs/operators';
+import { shareReplay, tap } from 'rxjs/operators';
 import 'firebase/firestore';
 import { Observable } from 'rxjs';
 
@@ -18,7 +18,6 @@ export class AuthService {
   ) {
     this.currentUser$ = this.afAuth.authState.pipe(
       tap(user => this.currentUser = user),
-      tap(u => console.log('current user:', u)),
       shareReplay(1)
     );
   }

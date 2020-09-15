@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/auth';
 import {
   AngularFirestore,
   AngularFirestoreCollection,
   AngularFirestoreDocument,
 } from '@angular/fire/firestore';
 import * as firebase from 'firebase/app';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 
 // need to import authservice, or do I?
 import { AuthService } from './auth.service';
@@ -34,8 +33,7 @@ export class LogService {
       tap((id) => {
         this.logListCollection = this.getLogsCollection(id);
       }),
-      switchMap(() => this.logListCollection.valueChanges()),
-      tap((stuff) => console.log('stuff', stuff))
+      switchMap(() => this.logListCollection.valueChanges())
     );
   }
 

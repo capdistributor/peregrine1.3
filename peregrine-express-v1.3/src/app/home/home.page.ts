@@ -28,10 +28,7 @@ export class HomePage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.logList$ = this.logService.logList$
-      .pipe(
-        tap(l => console.log('logs:', l))
-      );
+    this.logList$ = this.logService.logList$;
     this.initializeBackButtonCustomHandler();
   }
 
