@@ -4,7 +4,6 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, of, combineLatest as CombineLatest, Subscription } from 'rxjs';
 import { LogService } from 'src/app/services/log.service';
 import { AuthService } from 'src/app/services/auth.service';
-import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-memo-single',
@@ -12,12 +11,10 @@ import { tap } from 'rxjs/operators';
   styleUrls: ['./memo-single.page.scss'],
 })
 export class MemoSinglePage implements OnInit, OnDestroy {
-  public memo$: Observable<any>;
-  memo: Memo;
-  public memoId: string;
-  public convertedDate: string;
-  public isConfirmed: Observable<boolean>;
+  memoId: string;
   userId: string;
+  currentMemo: Memo;
+  isConfirmed$: Observable<boolean>;
   memoSubscription: Subscription;
 
   constructor(
@@ -29,20 +26,20 @@ export class MemoSinglePage implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.memoId = this.route.snapshot.paramMap.get('id');
-    this.memo$ = this.memoService.getMemoDetail(this.memoId)
-      .pipe(
-        tap(m => console.log('memo', m))
-      );
+    const memoId = this.route.snapshot.paramMap.get('id');
+
     this.memoSubscription = CombineLatest([
-      this.memoService.getMemoDetail(this.memoId),
+      this.memoService.getMemoDetail(memoId),
       this.authService.currentUser$
     ])
       .subscribe(([memo, user]) => {
-        this.memo = memo;
-        this.memo.date = this.memoService.dateFromFirestore(memo.date);
+        this.currentMemo = {
+          ...memo,
+          date: this.memoService.dateFromFirestore(memo.date)
+        };
+
         this.userId = user.uid;
-        this.isConfirmed = of(memo.confirmations && memo.confirmations[this.userId]);
+        this.isConfirmed$ = of(memo.confirmations && memo.confirmations[this.userId]);
       });
 
   }
