@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Observable, of, combineLatest as CombineLatest, Subscription } from 'rxjs';
 import { LogService } from 'src/app/services/log.service';
 import { AuthService } from 'src/app/services/auth.service';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-memo-single',
@@ -29,7 +30,10 @@ export class MemoSinglePage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.memoId = this.route.snapshot.paramMap.get('id');
-    this.memo$ = this.memoService.getMemoDetail(this.memoId);
+    this.memo$ = this.memoService.getMemoDetail(this.memoId)
+      .pipe(
+        tap(m => console.log('memo', m))
+      );
     this.memoSubscription = CombineLatest([
       this.memoService.getMemoDetail(this.memoId),
       this.authService.currentUser$
