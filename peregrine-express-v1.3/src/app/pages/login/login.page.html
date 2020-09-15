@@ -10,11 +10,16 @@
       <ion-img src="../../../assets/images/peregrine-express.png"></ion-img>
     </ion-card-content>
   </ion-card>
-  <app-auth-form #loginForm (formSubmitted)="loginUser($event)" [actionButtonText]="'Login'"></app-auth-form>
-  <ion-button expand="block" fill="clear" routerLink="/signup">
-    Create a new account
-  </ion-button>
-  <ion-button expand="block" fill="clear" routerLink="/reset-password">
-    I forgot my password :(
-  </ion-button>
+
+  <ion-card>
+    <ion-card-content>
+      <app-auth-form #loginForm (formSubmitted)="loginUser($event)" [actionButtonText]="'Login'"></app-auth-form>
+      <ion-button expand="block" fill="clear" routerLink="/signup">
+        Create a new account
+      </ion-button>
+      <ion-button expand="block" fill="clear" routerLink="/reset-password">
+        I forgot my password :(
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
 </ion-content>

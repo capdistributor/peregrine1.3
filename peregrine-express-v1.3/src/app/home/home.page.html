@@ -18,17 +18,25 @@
 </ion-header>
 
 <ion-content padding>
+  <ion-card>
+    <ion-card-content>
+      <app-unread-memo-alert [showAlert]="unreadMemoStatus$ | async"></app-unread-memo-alert>
+    </ion-card-content>
+  </ion-card>
 
-  <app-unread-memo-alert [showAlert]="unreadMemoStatus$ | async"></app-unread-memo-alert>
 
-  <ion-list>
-    <ion-list-header><h3>Previous Logs</h3></ion-list-header>
-    <ion-item *ngFor="let log of logList$ | async" routerLink="/edit-daily-log/{{log.id}}">
-      <ion-label>
-        <h2>{{ log.date.toString().substring(0, 10) }}</h2>
-      </ion-label>
-    </ion-item>
-  </ion-list>
+  <ion-card>
+    <ion-card-content>
+      <ion-list>
+        <ion-list-header><h3>Previous Logs</h3></ion-list-header>
+        <ion-item *ngFor="let log of logList$ | async" routerLink="/edit-daily-log/{{log.id}}">
+          <ion-label>
+            <h2>{{ log.date.toString().substring(0, 10) }}</h2>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button routerLink="/create-daily-log">

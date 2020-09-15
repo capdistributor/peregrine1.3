@@ -8,133 +8,139 @@
 </ion-header>
 
 <ion-content *ngIf="isLoaded" padding>
-  <form [formGroup]="updateLogForm">
-    <div *ngIf="!foundActivities" style="color: red">
-      No activities have been activated in the app settings. The app will not function properly.
-    </div>
-    <ion-list>
-      <ion-item>
-        <ion-label>Log Date</ion-label>
-        <ion-datetime formControlName="date" type="date" displayFormat="MMM DD YYYY" value="{{ (log | async)?.date.toString().substring(0,10) }}"></ion-datetime>
-      </ion-item>
-      <ion-item *ngIf="activities.relays">
-        <ion-label>Relays</ion-label>
-        <ion-input text-right formControlName="relays" type="number" value="{{ (log | async)?.relays }}"></ion-input>
-      </ion-item>
-      <ion-item *ngIf="activities.lateBags">
-        <ion-label>Late Bags</ion-label>
-        <ion-input text-right formControlName="lateBags" type="number" value="{{ (log | async)?.lateBags }}"></ion-input>
-      </ion-item>
-      <ion-item *ngIf="activities.directs">
-        <ion-label>Directs</ion-label>
-        <ion-input text-right formControlName="directs" type="number" value="{{ (log | async)?.directs }}"></ion-input>
-      </ion-item>
-      <ion-item *ngIf="activities.tieOuts">
-        <ion-label>Tie Outs</ion-label>
-        <ion-input text-right formControlName="tieOuts" type="number" value="{{ (log | async)?.tieOuts }}"></ion-input>
-      </ion-item>
-      <ion-item *ngIf="activities.signature">
-        <ion-label>Signature</ion-label>
-        <ion-input text-right formControlName="signature" type="number" value="{{ (log | async)?.signature }}"></ion-input>
-      </ion-item>
-      <ion-item *ngIf="activities.nonSignature">
-        <ion-label>Non-Signature</ion-label>
-        <ion-input text-right formControlName="nonSignature" type="number" value="{{ (log | async)?.nonSignature }}"></ion-input>
-      </ion-item>
-      <ion-item *ngIf="activities.customsCOD">
-        <ion-label>Customs COD</ion-label>
-        <ion-input text-right formControlName="customsCOD" type="number" value="{{ (log | async)?.customsCOD }}"></ion-input>
-      </ion-item>
-      <ion-item *ngIf="activities.nonBarcoded">
-        <ion-label>Non-Barcoded</ion-label>
-        <ion-input text-right formControlName="nonBarcoded" type="number" value="{{ (log | async)?.nonBarcoded }}"></ion-input>
-      </ion-item>
-      <ion-item *ngIf="activities.cpu">
-        <ion-label>CPU</ion-label>
-        <ion-input text-right formControlName="cpu" type="number" value="{{ (log | async)?.cpu }}"></ion-input>
-      </ion-item>
-      <ion-item *ngIf="activities.cpu11To50">
-        <ion-label>CPU 11-50</ion-label>
-        <ion-input text-right formControlName="cpu11To50" type="number" value="{{ (log | async)?.cpu11To50 }}"></ion-input>
-      </ion-item>
-      <ion-item *ngIf="activities.cpu51AndUp">
-        <ion-label>CPU 51+</ion-label>
-        <ion-input text-right formControlName="cpu51AndUp" type="number" value="{{ (log | async)?.cpu51AndUp }}"></ion-input>
-      </ion-item>
-      <ion-item *ngIf="activities.slb">
-        <ion-label>SLB</ion-label>
-        <ion-input text-right formControlName="slb" type="number" value="{{ (log | async)?.slb }}"></ion-input>
-      </ion-item>
-      <ion-item *ngIf="activities.depotTransfers">
-        <ion-label>Depot Transfers</ion-label>
-        <ion-input text-right formControlName="depotTransfers" type="number" value="{{ (log | async)?.depotTransfers }}"></ion-input>
-      </ion-item>
-      <ion-item *ngIf="activities.rpoClears">
-        <ion-label>RPO Clears</ion-label>
-        <ion-input text-right formControlName="rpoClears" type="number" value="{{ (log | async)?.rpoClears }}"></ion-input>
-      </ion-item>
-      <ion-item *ngIf="activities.latePrios">
-        <ion-label>Late Prios</ion-label>
-        <ion-input text-right formControlName="latePrios" type="number" value="{{ (log | async)?.latePrios }}"></ion-input>
-      </ion-item>
-      <ion-item *ngIf="activities.slbExtractions">
-        <ion-label>SLB Extractions</ion-label>
-        <ion-input text-right formControlName="slbExtractions" type="number" value="{{ (log | async)?.slbExtractions }}"></ion-input>
-      </ion-item>
-      <ion-item *ngIf="activities.manAndVan">
-        <ion-label>Man and Van</ion-label>
-        <ion-input text-right formControlName="manAndVan" type="number" value="{{ (log | async)?.manAndVan }}"></ion-input>
-      </ion-item>
-      <ion-item *ngIf="activities.stationMain">
-        <ion-label>Station Main</ion-label>
-        <ion-input text-right formControlName="stationMain" type="number" value="{{ (log | async)?.stationMain }}"></ion-input>
-      </ion-item>
-      <ion-item *ngIf="activities.virl">
-        <ion-label>VIRL</ion-label>
-        <ion-input text-right formControlName="virl" type="number" value="{{ (log | async)?.virl }}"></ion-input>
-      </ion-item>
-      <ion-item *ngIf="activities.boxChecks">
-        <ion-label>Box Checks</ion-label>
-        <ion-input text-right formControlName="boxChecks" type="number" value="{{ (log | async)?.boxChecks }}"></ion-input>
-      </ion-item>
-      <ion-item *ngIf="activities.fedex">
-        <ion-label>Fedex</ion-label>
-        <ion-input text-right formControlName="fedex" type="number" value="{{ (log | async)?.fedex }}"></ion-input>
-      </ion-item>
-      <ion-item *ngIf="activities.redBags">
-        <ion-label>Red Bags</ion-label>
-        <ion-input text-right formControlName="redBags" type="number" value="{{ (log | async)?.redBags }}"></ion-input>
-      </ion-item>
-      <ion-item *ngIf="activities.ported">
-        <ion-label>Ported</ion-label>
-        <ion-input text-right formControlName="ported" type="number" value="{{ (log | async)?.ported }}"></ion-input>
-      </ion-item>
-      <ion-item *ngIf="activities.seaplane">
-        <ion-label>Seaplane</ion-label>
-        <ion-input text-right formControlName="seaplane" type="number" value="{{ (log | async)?.seaplane }}"></ion-input>
-      </ion-item>
-      <ion-item *ngIf="activities.bhv">
-        <ion-label>BHV</ion-label>
-        <ion-input text-right formControlName="bhv" type="number" value="{{ (log | async)?.bhv }}"></ion-input>
-      </ion-item>
-      <ion-item *ngIf="activities.mobiles">
-        <ion-label>Mobiles</ion-label>
-        <ion-input text-right formControlName="mobiles" type="number" value="{{ (log | async)?.mobiles }}"></ion-input>
-      </ion-item>
-      <ion-item *ngIf="activities.boeing">
-        <ion-label>Boeing</ion-label>
-        <ion-input text-right formControlName="boeing" type="number" value="{{ (log | async)?.boeing }}"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label>Notes</ion-label>
-        <ion-textarea formControlName="notes" value="{{ (log | async)?.notes }}"></ion-textarea>
-      </ion-item>
-    </ion-list>
-    <ion-button expand="block" (click)="onSubmitUpdateLog()">
-      Confirm Daily Log Edit
-    </ion-button>
-    <ion-button size="small" expand="block" color="danger" (click)="onSubmitDeleteLog()">
-      Delete this Log
-    </ion-button>
-  </form>
+  <ion-card>
+    <ion-card-content>
+      <form [formGroup]="updateLogForm">
+        <div *ngIf="!foundActivities" style="color: red">
+          No activities have been activated in the app settings. The app will not function properly.
+        </div>
+        <ion-list>
+          <ion-item>
+            <ion-label>Log Date</ion-label>
+            <ion-datetime formControlName="date" type="date" displayFormat="MMM DD YYYY" value="{{ (log | async)?.date.toString().substring(0,10) }}"></ion-datetime>
+          </ion-item>
+          <ion-item *ngIf="activities.relays">
+            <ion-label>Relays</ion-label>
+            <ion-input class="ion-text-right" formControlName="relays" type="number" value="{{ (log | async)?.relays }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.lateBags">
+            <ion-label>Late Bags</ion-label>
+            <ion-input class="ion-text-right" formControlName="lateBags" type="number" value="{{ (log | async)?.lateBags }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.directs">
+            <ion-label>Directs</ion-label>
+            <ion-input class="ion-text-right" formControlName="directs" type="number" value="{{ (log | async)?.directs }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.tieOuts">
+            <ion-label>Tie Outs</ion-label>
+            <ion-input class="ion-text-right" formControlName="tieOuts" type="number" value="{{ (log | async)?.tieOuts }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.signature">
+            <ion-label>Signature</ion-label>
+            <ion-input class="ion-text-right" formControlName="signature" type="number" value="{{ (log | async)?.signature }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.nonSignature">
+            <ion-label>Non-Signature</ion-label>
+            <ion-input class="ion-text-right" formControlName="nonSignature" type="number" value="{{ (log | async)?.nonSignature }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.customsCOD">
+            <ion-label>Customs COD</ion-label>
+            <ion-input class="ion-text-right" formControlName="customsCOD" type="number" value="{{ (log | async)?.customsCOD }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.nonBarcoded">
+            <ion-label>Non-Barcoded</ion-label>
+            <ion-input class="ion-text-right" formControlName="nonBarcoded" type="number" value="{{ (log | async)?.nonBarcoded }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.cpu">
+            <ion-label>CPU</ion-label>
+            <ion-input class="ion-text-right" formControlName="cpu" type="number" value="{{ (log | async)?.cpu }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.cpu11To50">
+            <ion-label>CPU 11-50</ion-label>
+            <ion-input class="ion-text-right" formControlName="cpu11To50" type="number" value="{{ (log | async)?.cpu11To50 }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.cpu51AndUp">
+            <ion-label>CPU 51+</ion-label>
+            <ion-input class="ion-text-right" formControlName="cpu51AndUp" type="number" value="{{ (log | async)?.cpu51AndUp }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.slb">
+            <ion-label>SLB</ion-label>
+            <ion-input class="ion-text-right" formControlName="slb" type="number" value="{{ (log | async)?.slb }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.depotTransfers">
+            <ion-label>Depot Transfers</ion-label>
+            <ion-input class="ion-text-right" formControlName="depotTransfers" type="number" value="{{ (log | async)?.depotTransfers }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.rpoClears">
+            <ion-label>RPO Clears</ion-label>
+            <ion-input class="ion-text-right" formControlName="rpoClears" type="number" value="{{ (log | async)?.rpoClears }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.latePrios">
+            <ion-label>Late Prios</ion-label>
+            <ion-input class="ion-text-right" formControlName="latePrios" type="number" value="{{ (log | async)?.latePrios }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.slbExtractions">
+            <ion-label>SLB Extractions</ion-label>
+            <ion-input class="ion-text-right" formControlName="slbExtractions" type="number" value="{{ (log | async)?.slbExtractions }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.manAndVan">
+            <ion-label>Man and Van</ion-label>
+            <ion-input class="ion-text-right" formControlName="manAndVan" type="number" value="{{ (log | async)?.manAndVan }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.stationMain">
+            <ion-label>Station Main</ion-label>
+            <ion-input class="ion-text-right" formControlName="stationMain" type="number" value="{{ (log | async)?.stationMain }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.virl">
+            <ion-label>VIRL</ion-label>
+            <ion-input class="ion-text-right" formControlName="virl" type="number" value="{{ (log | async)?.virl }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.boxChecks">
+            <ion-label>Box Checks</ion-label>
+            <ion-input class="ion-text-right" formControlName="boxChecks" type="number" value="{{ (log | async)?.boxChecks }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.fedex">
+            <ion-label>Fedex</ion-label>
+            <ion-input class="ion-text-right" formControlName="fedex" type="number" value="{{ (log | async)?.fedex }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.redBags">
+            <ion-label>Red Bags</ion-label>
+            <ion-input class="ion-text-right" formControlName="redBags" type="number" value="{{ (log | async)?.redBags }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.ported">
+            <ion-label>Ported</ion-label>
+            <ion-input class="ion-text-right" formControlName="ported" type="number" value="{{ (log | async)?.ported }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.seaplane">
+            <ion-label>Seaplane</ion-label>
+            <ion-input class="ion-text-right" formControlName="seaplane" type="number" value="{{ (log | async)?.seaplane }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.bhv">
+            <ion-label>BHV</ion-label>
+            <ion-input class="ion-text-right" formControlName="bhv" type="number" value="{{ (log | async)?.bhv }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.mobiles">
+            <ion-label>Mobiles</ion-label>
+            <ion-input class="ion-text-right" formControlName="mobiles" type="number" value="{{ (log | async)?.mobiles }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.boeing">
+            <ion-label>Boeing</ion-label>
+            <ion-input class="ion-text-right" formControlName="boeing" type="number" value="{{ (log | async)?.boeing }}"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label>Notes</ion-label>
+            <ion-textarea formControlName="notes" value="{{ (log | async)?.notes }}"></ion-textarea>
+          </ion-item>
+        </ion-list>
+        <section>
+          <ion-button expand="block" (click)="onSubmitUpdateLog()">
+            Confirm Daily Log Edit
+          </ion-button>
+          <ion-button size="small" expand="block" color="danger" (click)="onSubmitDeleteLog()">
+            Delete this Log
+          </ion-button>
+        </section>
+      </form>
+    </ion-card-content>
+  </ion-card>
 </ion-content>
