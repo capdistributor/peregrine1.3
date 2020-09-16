@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { shareReplay, tap } from 'rxjs/operators';
+import { shareReplay, tap, switchMap, filter } from 'rxjs/operators';
 import 'firebase/firestore';
 import { Observable } from 'rxjs';
 
@@ -17,6 +17,8 @@ export class AuthService {
     private firestore: AngularFirestore
   ) {
     this.currentUser$ = this.afAuth.authState.pipe(
+      filter(user => !!user),
+      switchMap(user => this.firestore.doc(`userProfile/${user.uid}`).valueChanges()),
       tap(user => this.currentUser = user),
       shareReplay(1)
     );
@@ -46,7 +48,7 @@ export class AuthService {
       );
       await this.firestore
         .doc(`userProfile/${newUserCredential.user.uid}`)
-        .set({ email, fullName, city });
+        .set({ email, fullName, city, isAdmin:false });
       return newUserCredential;
     } catch (error) {
       throw error;

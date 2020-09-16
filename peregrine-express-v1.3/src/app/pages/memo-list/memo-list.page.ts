@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MemoService } from '../../services/memo.service';
 import { Observable } from 'rxjs';
+import { AuthService } from 'src/app/services/auth.service';
+import { map, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-memo-list',
@@ -9,9 +11,12 @@ import { Observable } from 'rxjs';
 })
 export class MemoListPage implements OnInit {
   public memoList: Observable<any>;
+  isAdmin$ = this.authService.currentUser$.pipe(
+    map(user => user.isAdmin)
+  );
 
   constructor(
-    private memoService: MemoService,
+    private memoService: MemoService, private authService: AuthService
   ) {
 
   }

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './services/auth.guard';
+import { AdminGuard } from './services/admin.guard';
 
 const routes: Routes = [
   {
@@ -54,6 +55,11 @@ const routes: Routes = [
     path: 'edit-daily-log',
     loadChildren: () => import('./pages/edit-daily-log/edit-daily-log.module').then( m => m.EditDailyLogPageModule),
     canActivate: [AuthGuard]
+  },
+  {
+    path: 'create-memo',
+    loadChildren: () => import('./pages/create-memo/create-memo.module').then( m => m.CreateMemoPageModule),
+    canActivate: [AdminGuard]
   },
 ];
 
