@@ -14,11 +14,11 @@ export class CreateDailyLogPage implements OnInit {
   public activities;
   public createLogForm: FormGroup;
   today = new Date();
-  todayTimeZoneDate: String = new Date(this.today.getTime() - this.today.getTimezoneOffset()*60000).toISOString();
+  todayTimeZoneDate: string = new Date(this.today.getTime() - this.today.getTimezoneOffset() * 60000).toISOString();
   isLoaded = false;
   buttonDisabled = false;
   foundActivities: boolean;
-  
+
   constructor(
     public formBuilder: FormBuilder,
     private router: Router,
@@ -27,7 +27,7 @@ export class CreateDailyLogPage implements OnInit {
     private toastCtrl: ToastController
   ) {
     this.createLogForm = this.formBuilder.group({
-      date: [''],
+      date: [this.todayTimeZoneDate],
       relays: [''],
       lateBags: [''],
       directs: [''],
@@ -57,8 +57,6 @@ export class CreateDailyLogPage implements OnInit {
       boeing: [''],
       notes: ['']
     });
-
-    
   }
 
   ngOnInit() {
@@ -69,9 +67,7 @@ export class CreateDailyLogPage implements OnInit {
       const keys = Object.keys(this.activities);
       const foundActivities = keys.filter(key => !!this.activities[key]);
       this.foundActivities = !!foundActivities.length;
-    })
-
-    
+    });
   }
 
   createLog(createLogForm) {
@@ -80,38 +76,38 @@ export class CreateDailyLogPage implements OnInit {
       .then(
         () => {
         this.logService
-            .createLog(
-              createLogForm.value.date,
-              createLogForm.value.relays,
-              createLogForm.value.lateBags,
-              createLogForm.value.directs,
-              createLogForm.value.tieOuts,
-              createLogForm.value.signature,
-              createLogForm.value.nonSignature,
-              createLogForm.value.customsCOD,
-              createLogForm.value.nonBarcoded,
-              createLogForm.value.cpu,
-              createLogForm.value.cpu11To50,
-              createLogForm.value.cpu51AndUp,
-              createLogForm.value.slb,
-              createLogForm.value.depotTransfers,
-              createLogForm.value.rpoClears,
-              createLogForm.value.latePrios,
-              createLogForm.value.slbExtractions,
-              createLogForm.value.manAndVan,
-              createLogForm.value.stationMain,
-              createLogForm.value.virl,
-              createLogForm.value.boxChecks,
-              createLogForm.value.fedex,
-              createLogForm.value.redBags,
-              createLogForm.value.ported,
-              createLogForm.value.seaplane,
-              createLogForm.value.bhv,
-              createLogForm.value.mobiles,
-              createLogForm.value.boeing,
-              createLogForm.value.notes
-            );
-          this.createLogToast();
+          .createLog(
+            createLogForm.value.date,
+            createLogForm.value.relays,
+            createLogForm.value.lateBags,
+            createLogForm.value.directs,
+            createLogForm.value.tieOuts,
+            createLogForm.value.signature,
+            createLogForm.value.nonSignature,
+            createLogForm.value.customsCOD,
+            createLogForm.value.nonBarcoded,
+            createLogForm.value.cpu,
+            createLogForm.value.cpu11To50,
+            createLogForm.value.cpu51AndUp,
+            createLogForm.value.slb,
+            createLogForm.value.depotTransfers,
+            createLogForm.value.rpoClears,
+            createLogForm.value.latePrios,
+            createLogForm.value.slbExtractions,
+            createLogForm.value.manAndVan,
+            createLogForm.value.stationMain,
+            createLogForm.value.virl,
+            createLogForm.value.boxChecks,
+            createLogForm.value.fedex,
+            createLogForm.value.redBags,
+            createLogForm.value.ported,
+            createLogForm.value.seaplane,
+            createLogForm.value.bhv,
+            createLogForm.value.mobiles,
+            createLogForm.value.boeing,
+            createLogForm.value.notes
+          );
+        this.createLogToast();
         },
         error => {
           console.log(error);
@@ -119,7 +115,7 @@ export class CreateDailyLogPage implements OnInit {
       );
   }
 
-  async createLogToast () {
+  async createLogToast() {
     const toast = await this.toastCtrl.create({
       message: 'Daily Log Uploaded!',
       duration: 1000,
