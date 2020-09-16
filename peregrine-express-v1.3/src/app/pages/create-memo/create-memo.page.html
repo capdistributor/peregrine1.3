@@ -1,9 +1,32 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>create-memo</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Add a New Memo</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content padding>
+  <form *ngIf="createMemoForm" [formGroup]="createMemoForm">
+    <ion-list>
+      <ion-item>
+        <ion-label position="stacked">Date</ion-label>
+        <ion-datetime formControlName="date" type="date" displayFormat="MMM D"></ion-datetime>
+        <!-- <ion-datetime type="date" displayFormat="MMM D" [(ngModel)]="dateModel" [ngModelOptions]="{standalone: true}"></ion-datetime> -->
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Memo Subject</ion-label>
+        <ion-input formControlName="subject" type="text" placeholder=""></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Memo Text</ion-label>
+        <ion-input formControlName="mainText" type="text" placeholder=""></ion-input>
+      </ion-item>
+    </ion-list>
+    <ion-button expand="block" (click)="onSubmitCreateMemo(createMemoForm)" [disabled]="buttonDisabled">
+      Create Memo
+    </ion-button>
+  </form>
 
 </ion-content>
