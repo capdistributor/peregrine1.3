@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { shareReplay, tap, switchMap, filter } from 'rxjs/operators';
+import { shareReplay, tap, filter, map,  concatMap } from 'rxjs/operators';
 import 'firebase/firestore';
 import { Observable } from 'rxjs';
 
@@ -18,10 +18,18 @@ export class AuthService {
   ) {
     this.currentUser$ = this.afAuth.authState.pipe(
       filter(user => !!user),
-      switchMap(user => this.firestore.doc(`userProfile/${user.uid}`).valueChanges()),
       tap(user => this.currentUser = user),
+      concatMap(user => this.getUserProfile(user.uid)),
+      map(userPofile => {
+        return {...this.currentUser, ...userPofile};
+      }),
+      tap((megaUser) => this.currentUser = megaUser),
       shareReplay(1)
     );
+  }
+
+  getUserProfile(uid: string): Observable<any> {
+    return this.firestore.doc(`userProfile/${uid}`).valueChanges();
   }
 
   getUser(): Promise<firebase.User> {
