@@ -24,18 +24,14 @@
     
     <ion-card-content>
 
-        <p>I confirm that I have read and understand this material.</p>
-        
-        <!-- this doesn't work -->
-        <p *ngIf="!isConfirmed$ | async">I confirm that I have read and understand this material.</p>
+      <p *ngIf="!(isConfirmed$ | async)">I confirm that I have read and understand this material.</p>
 
-        <p *ngIf="isConfirmed$ | async">Confirmed on {{ currentMemo.confirmations[userId] *1000 | date: 'MMM d, yyyy' }}</p>
-
-        <ion-button expand="block" (click)="submitConfirmed(currentMemo)" [disabled]="isConfirmed$ | async">
-          <!-- Confirmed on {{ currentMemo.confirmations[userId] *1000 | date: 'MMM d, yyyy' }} -->
-          <!-- not sure how to do conditional text inside the button -->
-          <!-- ngIf=isConfirmed doesn't seem to ever read false -->
+        <ion-button *ngIf="!(isConfirmed$ | async)" expand="block" (click)="submitConfirmed(currentMemo)" [disabled]="isConfirmed$ | async">
           Confirm
+        </ion-button>
+
+        <ion-button *ngIf="(isConfirmed$ | async)" expand="block" (click)="submitConfirmed(currentMemo)" [disabled]="isConfirmed$ | async">
+          Confirmed on {{ currentMemo.confirmations[userId].seconds*1000 | date: 'MMM d, yyyy' }}
         </ion-button>
 
     </ion-card-content>
