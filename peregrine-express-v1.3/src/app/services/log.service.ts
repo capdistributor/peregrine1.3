@@ -9,13 +9,14 @@ import { Observable } from 'rxjs';
 
 // need to import authservice, or do I?
 import { AuthService } from './auth.service';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { filter, map, switchMap, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LogService {
   private userId$ = this.authService.currentUser$.pipe(
+    filter(user => !!user),
     map((user) => user.uid),
     tap((id) => (this._userId = id))
   );
