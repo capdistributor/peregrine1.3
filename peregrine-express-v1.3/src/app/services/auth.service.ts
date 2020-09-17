@@ -56,7 +56,7 @@ export class AuthService {
       );
       await this.firestore
         .doc(`userProfile/${newUserCredential.user.uid}`)
-        .set({ email, fullName, city, isAdmin:false });
+        .set({ email, fullName, city, isAdmin:false, isActive:true });
       return newUserCredential;
     } catch (error) {
       throw error;

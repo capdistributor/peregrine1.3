@@ -24,7 +24,7 @@
     
     <ion-card-content>
 
-      <p *ngIf="!(isConfirmed$ | async)">I confirm that I have read and understand this material.</p>
+      <p class="ion-text-center" *ngIf="!(isConfirmed$ | async)">I confirm that I have read and understand this material.</p>
 
         <ion-button *ngIf="!(isConfirmed$ | async)" expand="block" (click)="submitConfirmed(currentMemo)" [disabled]="isConfirmed$ | async">
           Confirm

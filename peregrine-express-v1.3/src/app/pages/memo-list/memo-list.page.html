@@ -13,8 +13,8 @@
       <ion-list>
         <app-list-item *ngFor="let memo of memoList | async" [memo]="memo"></app-list-item>
       </ion-list>
-      <ion-button expand="block" *ngIf="isAdmin$ | async">
-        testing button
+      <ion-button expand="block" color="danger" *ngIf="isAdmin$ | async" routerLink="/create-memo">
+        Memo Blaster
       </ion-button>
     </ion-card-content>
   </ion-card>
