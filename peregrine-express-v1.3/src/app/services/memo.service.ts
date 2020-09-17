@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/auth';
 import {
   AngularFirestore,
   AngularFirestoreCollection,
 } from '@angular/fire/firestore';
-import { Observable, of, Timestamp } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { AuthService } from './auth.service';
 
 export interface Memo {
   id: string;
@@ -30,11 +30,14 @@ export class MemoService {
   userId: string;
 
   constructor(
-    private firestore: AngularFirestore
+    private firestore: AngularFirestore,
+    private authService: AuthService
     ) {
-
     this.memoList = this.firestore.collection(`/memos`,
-    ref => ref.where('isArchived', '==', false).orderBy('date','desc'));
+    ref => ref.where('isArchived', '==', false).orderBy('date', 'desc'));
+
+    this.authService.currentUserAuth$
+      .subscribe(user => this.userId = user.uid);
   }
 
   getMemoList(): AngularFirestoreCollection<any> {
@@ -46,23 +49,24 @@ export class MemoService {
       map(memos => {
         return memos.find(memo => memo.id === memoId);
       })
-    )
+    );
   }
 
   // User Functions
-  dateFromFirestore(date) {
+  dateFromFirestore(date): Date {
     return new Date (date.seconds * 1000);
   }
 
-  isMemoConfirmed(memo: Memo): Observable<ConfirmedMemo> {
-    return of(!!memo.confirmations && memo.confirmations[this.userId])
+  isMemoConfirmed(memo: Memo): boolean {
+    const confirmDate = memo.confirmations && memo.confirmations[this.userId];
+    return !!confirmDate;
   }
 
   unconfirmedMemosExist(): Observable<boolean> {
     return this.memoList.valueChanges()
       .pipe(
         map(memos => memos.some(memo => !memo.confirmations || !memo.confirmations[this.userId])),
-      )
+      );
   }
 
   submitMemoConfirmed(memo: Memo, userId: string) {
@@ -72,7 +76,7 @@ export class MemoService {
     }
     memo.confirmations[userId] = now;
     return this.firestore.doc<Memo>(`/memos/${memo.id}`).update(memo);
-  };
+  }
 
 
   // Admin Functions

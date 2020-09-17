@@ -8,5 +8,5 @@
     </p>
     {{ memo.date | date: 'MMM d, yyyy' }}
   </ion-label>
-  <ion-label *ngIf="isConfirmed$ | async" item-right text-right class="unreadLabel">Unread</ion-label>
+  <ion-label *ngIf="!isConfirmed" item-right text-right class="unreadLabel">Unread</ion-label>
 </ion-item>
