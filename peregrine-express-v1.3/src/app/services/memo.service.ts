@@ -6,10 +6,9 @@ import {
 } from '@angular/fire/firestore';
 import { Observable, of, Timestamp } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AuthService } from './auth.service';
 
 export interface Memo {
-  id?: string;
+  id: string;
   date: any;
   subject: string;
   mainText: string;
@@ -31,25 +30,12 @@ export class MemoService {
   userId: string;
 
   constructor(
-    private firestore: AngularFirestore,
-    private authService: AuthService) {
+    private firestore: AngularFirestore
+    ) {
 
-    this.memoList = this.firestore.collection(`memos`,
-    ref => ref.where('isArchived', '==', false)
-    .orderBy('date', 'desc'));
-
-    this.authService.currentUser$.subscribe(user => {
-      if (user) {
-        this.userId = user.uid;
-      }
-    });
-    // get list of confirmed memos from userId
+    this.memoList = this.firestore.collection(`/memos`,
+    ref => ref.where('isArchived', '==', false).orderBy('date','desc'));
   }
-
-  dateFromFirestore(date) {
-    return new Date (date.seconds * 1000);
-  }
-
 
   getMemoList(): AngularFirestoreCollection<any> {
     return this.memoList;
@@ -61,6 +47,11 @@ export class MemoService {
         return memos.find(memo => memo.id === memoId);
       })
     )
+  }
+
+  // User Functions
+  dateFromFirestore(date) {
+    return new Date (date.seconds * 1000);
   }
 
   isMemoConfirmed(memo: Memo): Observable<ConfirmedMemo> {
@@ -83,8 +74,8 @@ export class MemoService {
     return this.firestore.doc<Memo>(`/memos/${memo.id}`).update(memo);
   };
 
-  
-  // admin-only functions
+
+  // Admin Functions
   async createMemo(
     date: Date,
     subject: string = null,
@@ -102,20 +93,23 @@ export class MemoService {
     });
   }
 
-  async updateMemo(memoId, updateMemoFormValue) {
-    console.log("update form value: ", updateMemoFormValue);
-    const res = await this.firestore.doc(`/memos/${memoId}`).update(updateMemoFormValue);
-    console.log("Memo successfully updated!", res);
-  }
+  // Next Version Functions
 
-  deleteMemo(memoId: string): Promise<any> {
-    return this.memoList.doc(memoId).delete();
-  }
+  // async updateMemo(memoId, updateMemoFormValue) {
+  //   console.log("update form value: ", updateMemoFormValue);
+  //   const res = await this.firestore.doc(`/memos/${memoId}`).update(updateMemoFormValue);
+  //   console.log("Memo successfully updated!", res);
+  // }
 
-  async archiveMemo(memoId: string) {
-    return await this.firestore.doc(`/memos/${memoId}`)
-      .update({
-        isArchived: true
-      });
-  }
+  // deleteMemo(memoId: string): Promise<any> {
+  //   return this.memoList.doc(memoId).delete();
+  // }
+
+  // async archiveMemo(memoId: string) {
+  //   return await this.firestore.doc(`/memos/${memoId}`)
+  //     .update({
+  //       isArchived: true
+  //     });
+  // }
+
 }
