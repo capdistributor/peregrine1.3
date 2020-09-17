@@ -28,7 +28,7 @@
           </ion-item>
           <ion-item>
             <ion-label position="stacked">Memo Text</ion-label>
-            <ion-input formControlName="mainText" type="text" placeholder=""></ion-input>
+            <ion-textarea autoGrow="true" formControlName="mainText" type="text" placeholder=""></ion-textarea>
           </ion-item>
         </ion-list>
         <ion-button expand="block" (click)="onSubmitCreateMemo(createMemoForm)" [disabled]="buttonDisabled">
