@@ -30,7 +30,7 @@ export class MemoSinglePage implements OnInit, OnDestroy {
 
     this.memoSubscription = CombineLatest([
       this.memoService.getMemoDetail(memoId),
-      this.authService.currentUser$
+      this.authService.currentUserAuth$
     ])
       .subscribe(([memo, user]) => {
         this.currentMemo = {

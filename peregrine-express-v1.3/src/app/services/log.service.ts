@@ -15,7 +15,7 @@ import { filter, map, switchMap, tap } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class LogService {
-  private userId$ = this.authService.currentUser$.pipe(
+  private userId$ = this.authService.currentUserAuth$.pipe(
     filter(user => !!user),
     map((user) => user.uid),
     tap((id) => (this._userId = id))
