@@ -7,6 +7,7 @@ import { Platform } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { tap } from 'rxjs/operators';
+import { NativeAudio } from '@ionic-native/native-audio/ngx';
 
 @Component({
   selector: 'app-home',
@@ -24,8 +25,11 @@ export class HomePage implements OnInit {
     private logService: LogService,
     private memoService: MemoService,
     private platform: Platform,
-    private router: Router
-  ) {}
+    private router: Router,
+    private nativeAudio: NativeAudio
+  ) {
+    this.nativeAudio.preloadSimple('falcon', 'assets/audio/falcon.mp3');
+  }
 
   ngOnInit() {
     this.logList$ = this.logService.logList$;
