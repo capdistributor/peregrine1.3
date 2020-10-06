@@ -3,11 +3,8 @@ import { AlertController } from '@ionic/angular';
 import { LogService } from '../services/log.service';
 import { Observable, Subscription } from 'rxjs';
 import { MemoService } from '../services/memo.service';
-import { Platform } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
-import { tap } from 'rxjs/operators';
-import { NativeAudio } from '@ionic-native/native-audio/ngx';
 
 @Component({
   selector: 'app-home',
@@ -24,43 +21,40 @@ export class HomePage implements OnInit {
     private alertCtrl: AlertController,
     private logService: LogService,
     private memoService: MemoService,
-    private platform: Platform,
-    private router: Router,
-    private nativeAudio: NativeAudio
+    private router: Router
   ) {
-    this.nativeAudio.preloadSimple('falcon', 'assets/audio/falcon.mp3');
   }
 
   ngOnInit() {
     this.logList$ = this.logService.logList$;
-    this.initializeBackButtonCustomHandler();
+    // this.initializeBackButtonCustomHandler();
   }
 
-  ionViewWillLeave() {
-    this.unsubscribeBackEvent;
-  }
+  // ionViewWillLeave() {
+  //   this.unsubscribeBackEvent;
+  // }
 
-  initializeBackButtonCustomHandler(): void {
-    this.unsubscribeBackEvent = this.platform.backButton.subscribeWithPriority(999999, () => {
-      this.confirmExit();
-    })
-  }
+  // initializeBackButtonCustomHandler(): void {
+  //   this.unsubscribeBackEvent = this.platform.backButton.subscribeWithPriority(10, () => {
+  //     this.confirmExit();
+  //   })
+  // }
 
-  async confirmExit() {
-    const alert = await this.alertCtrl.create({
-      message: 'Are you sure you want quit?',
-      buttons: [
-        { text: 'Cancel' },
-        {
-          text: 'Exit',
-          handler: () => {
-            navigator['app'].exitApp();
-          }
-        }
-      ]
-    });
-    await alert.present();
-  }
+  // async confirmExit() {
+  //   const alert = await this.alertCtrl.create({
+  //     message: 'Are you sure you want quit?',
+  //     buttons: [
+  //       { text: 'Cancel' },
+  //       {
+  //         text: 'Exit',
+  //         handler: () => {
+  //           navigator['app'].exitApp();
+  //         }
+  //       }
+  //     ]
+  //   });
+  //   await alert.present();
+  // }
 
   async confirmLogout() {
     const alert = await this.alertCtrl.create({

@@ -14,15 +14,22 @@
     <ion-card-content>
       Enable the activities that you will be using in your daily log upload.
       <ion-list>
-        <ng-container *ngIf="activities">
 
+        <ng-container *ngIf="activities">
           <ion-item *ngFor="let key of keys">
-            <ion-label>{{ key | titlecase }}</ion-label>
-            <ion-toggle [(ngModel)]="activities[key]"></ion-toggle>
+
+            <ion-label>{{ activities[key].name }}</ion-label>
+            <ion-toggle [(ngModel)]="activities[key].active"></ion-toggle>
           </ion-item>
         </ng-container>
+
       </ion-list>
-      <ion-button expand="block" (click)="saveSettingsToast()">Save Settings</ion-button>
+      <ion-button expand="block" (click)="saveSettingsToast()">
+        Save Settings
+      </ion-button>
+      <ion-button size="small" expand="block" color="danger" (click)="onSubmitClearStorage()">
+        Clear Settings
+      </ion-button>
     </ion-card-content>
   </ion-card>
 </ion-content>

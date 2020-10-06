@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ToastController } from '@ionic/angular';
+import { ToastController, AlertController } from '@ionic/angular';
 import { SettingsService } from 'src/app/services/settings.service';
 import { FormBuilder } from '@angular/forms';
 
@@ -11,42 +11,71 @@ import { FormBuilder } from '@angular/forms';
 })
 export class SettingsPage implements OnInit {
   public activities = {
-    relays: null,
-    lateBags: null,
-    directs: null,
-    tieOuts: null,
-    signature: null,
-    nonSignature: null,
-    customsCOD: null,
-    nonBarcoded: null,
-    cpu: null,
-    cpu11To50: null,
-    cpu51AndUp: null,
-    slb: null,
-    depotTransfers: null,
-    rpoClears: null,
-    latePrios: null,
-    slbExtractions: null,
-    manAndVan: null,
-    stationMain: null,
-    virl: null,
-    boxChecks: null,
-    fedex: null,
-    redBags: null,
-    ported: null,
-    seaplane: null,
-    bhv: null,
-    mobiles: null,
-    boeing: null,
+    relays: {active: false, name: 'Relays'},
+    lateBags: {active: false, name: 'Late Bags'},
+    directs: {active: false, name: 'Directs'},
+    tieOuts: {active: false, name: 'Tie Outs'},
+    signature: {active: false, name: 'Signature'},
+    nonSignature: {active: false, name: 'Non-Signature'},
+    customsCOD: {active: false, name: 'Customs COD'},
+    nonBarcoded: {active: false, name: 'Non-Barcoded'},
+    cpu: {active: false, name: 'CPU'},
+    cpu11To50: {active: false, name: 'CPU 11 to 50'},
+    cpu51AndUp: {active: false, name: 'CPU 51 and Up'},
+    slb: {active: false, name: 'SLB'},
+    depotTransfers: {active: false, name: 'Depot Transfers'},
+    rpoClears: {active: false, name: 'RPO Clears'},
+    latePrios: {active: false, name: 'Late Prios'},
+    slbExtractions: {active: false, name: 'SLB Extractions'},
+    manAndVan: {active: false, name: 'Man and Van'},
+    stationMain: {active: false, name: 'Station Main'},
+    virl: {active: false, name: 'VIRL'},
+    boxChecks: {active: false, name: 'Box Checks'},
+    fedex: {active: false, name: 'Fedex'},
+    redBags: {active: false, name: 'Red Bags'},
+    ported: {active: false, name: 'Ported'},
+    seaplane: {active: false, name: 'Seaplane'},
+    bhv: {active: false, name: 'BHV'},
+    mobiles: {active: false, name: 'Mobiles'},
+    boeing: {active: false, name: 'Boeing'},
   };
   keys = Object.keys(this.activities);
 
   isLoaded = false;
 
+  // Relays
+  // Late Bags
+  // Directs
+  // Tie Outs
+  // Signature
+  // Non-Signature
+  // Customs COD
+  // Non-Barcoded
+  // CPU
+  // CPU 11 to 50
+  // CPU 51 and Up
+  // SLB
+  // Depot Transfers
+  // RPO Clears
+  // Late Prios
+  // SLB Extractions
+  // Man and Van
+  // Station Main
+  // VIRL
+  // Box Checks
+  // Fedex
+  // Red Bags
+  // Ported
+  // Seaplane
+  // BHV
+  // Mobiles
+  // Boeing
+
   constructor(
     private fb: FormBuilder,
     public router: Router,
     public toastCtrl: ToastController,
+    public alertCtrl: AlertController,
     private settingsService: SettingsService
   ) {
     
@@ -75,5 +104,33 @@ export class SettingsPage implements OnInit {
       position: 'top'
     });
     toast.present();
+  }
+
+  async settingsClearedToast () {
+    const toast = await this.toastCtrl.create({
+      message: 'Settings Cleared',
+      duration: 1000,
+      position: 'top'
+    });
+    toast.present();
+  }
+
+  async onSubmitClearStorage(): Promise<void> {
+    const alert = await this.alertCtrl.create({
+      message: 'Are you sure you want to delete your settings?',
+      buttons: [
+        { text: 'Cancel' },
+        {
+          text: 'Confirm Delete',
+          handler: data => {
+            this.settingsService.clearStorage();
+            this.router.navigateByUrl('/home').then(() => {
+              this.settingsClearedToast();
+            });
+          }
+        }
+      ]
+    })
+    alert.present();
   }
 }

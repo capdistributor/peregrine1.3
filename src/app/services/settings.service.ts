@@ -30,4 +30,9 @@ export class SettingsService {
     });
   }
 
+  public clearStorage() {
+    this.storage.clear().then(() => {
+      console.log('all keys cleared');
+    });
+  }
 }
