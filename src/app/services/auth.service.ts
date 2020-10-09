@@ -46,7 +46,7 @@ export class AuthService {
         .doc(`userProfile/${newUserCredential.user.uid}`)
         .set({ email, fullName, city, isAdmin:false, isVerified:false });
 
-      await newUserCredential.user.sendEmailVerification();
+      //await newUserCredential.user.sendEmailVerification();
       return newUserCredential;
     } catch (error) {
       throw error;
