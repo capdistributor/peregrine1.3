@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { MemoSinglePage } from './memo-single.page';
@@ -7,7 +7,7 @@ describe('MemoSinglePage', () => {
   let component: MemoSinglePage;
   let fixture: ComponentFixture<MemoSinglePage>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ MemoSinglePage ],
       imports: [IonicModule.forRoot()]
