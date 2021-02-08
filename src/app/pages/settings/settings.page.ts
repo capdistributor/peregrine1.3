@@ -113,7 +113,9 @@ export class SettingsPage implements OnInit {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    console.log("init says hi");
+  }
 
   async saveSettingsToast() {
     this.settingsService.setSettings(this.activities).then(() =>{
