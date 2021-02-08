@@ -127,8 +127,60 @@
             <ion-label>Boeing</ion-label>
             <ion-input class="ion-text-right" formControlName="boeing" type="number" value="{{ (log | async)?.boeing }}"></ion-input>
           </ion-item>
+          <ion-item *ngIf="activities.overheadDoor.active">
+            <ion-label>Overhead Door</ion-label>
+            <ion-input class="ion-text-right" formControlName="overheadDoor" type="number" value="{{ (log | async)?.overheadDoor }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.wool.active">
+            <ion-label>Wool</ion-label>
+            <ion-input class="ion-text-right" formControlName="wool" type="number" value="{{ (log | async)?.wool }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.stationA.active">
+            <ion-label>Station A</ion-label>
+            <ion-input class="ion-text-right" formControlName="stationA" type="number" value="{{ (log | async)?.stationA }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.chHart.active">
+            <ion-label>CH Hart</ion-label>
+            <ion-input class="ion-text-right" formControlName="chHart" type="number" value="{{ (log | async)?.chHart }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.kimberley.active">
+            <ion-label>Kimberley</ion-label>
+            <ion-input class="ion-text-right" formControlName="kimberley" type="number" value="{{ (log | async)?.kimberley }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.viu.active">
+            <ion-label>VIU</ion-label>
+            <ion-input class="ion-text-right" formControlName="viu" type="number" value="{{ (log | async)?.viu }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.studentRes.active">
+            <ion-label>Student Res</ion-label>
+            <ion-input class="ion-text-right" formControlName="studentRes" type="number" value="{{ (log | async)?.studentRes }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.nrgh.active">
+            <ion-label>NRGH</ion-label>
+            <ion-input class="ion-text-right" formControlName="nrgh" type="number" value="{{ (log | async)?.nrgh }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.icbc.active">
+            <ion-label>ICBC</ion-label>
+            <ion-input class="ion-text-right" formControlName="icbc" type="number" value="{{ (log | async)?.icbc }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.ooa.active">
+            <ion-label>OOA</ion-label>
+            <ion-input class="ion-text-right" formControlName="ooa" type="number" value="{{ (log | async)?.ooa }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.sort.active">
+            <ion-label>Sort</ion-label>
+            <ion-input class="ion-text-right" formControlName="sort" type="number" value="{{ (log | async)?.sort }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.lateBagsAddTrip.active">
+            <ion-label>Late Bags Add Trip</ion-label>
+            <ion-input class="ion-text-right" formControlName="lateBagsAddTrip" type="number" value="{{ (log | async)?.lateBagsAddTrip }}"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.lateLateBags.active">
+            <ion-label>Late Late Bags</ion-label>
+            <ion-input class="ion-text-right" formControlName="lateLateBags" type="number" value="{{ (log | async)?.lateLateBags }}"></ion-input>
+          </ion-item>
           <ion-item>
-            <ion-label>Notes</ion-label>
+            <ion-label>Notes:</ion-label>
             <ion-textarea autoGrow="true" formControlName="notes" value="{{ (log | async)?.notes }}"></ion-textarea>
           </ion-item>
         </ion-list>

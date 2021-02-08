@@ -3,7 +3,7 @@ import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Rout
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AuthService } from './auth.service';
-
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +15,9 @@ export class VerifiedGuard implements CanActivate {
       return this.authService.currentUserProfile$
       .pipe(
         map(user => {
+          if (environment.production === false) {
+            return true;
+          }
           if (user.isVerified) {
             return true;
           } else {

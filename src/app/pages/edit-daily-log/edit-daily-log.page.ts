@@ -64,6 +64,19 @@ export class EditDailyLogPage implements OnInit {
       bhv: [''],
       mobiles: [''],
       boeing: [''],
+      overheadDoor: [''],
+      wool: [''],
+      stationA: [''],
+      chHart: [''],
+      kimberley: [''],
+      viu: [''],
+      studentRes: [''],
+      nrgh: [''],
+      icbc: [''],
+      ooa: [''],
+      sort: [''],
+      lateBagsAddTrip: [''],
+      lateLateBags: [''],
       notes: ['']
     });
   }

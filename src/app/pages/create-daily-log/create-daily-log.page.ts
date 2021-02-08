@@ -55,6 +55,19 @@ export class CreateDailyLogPage implements OnInit {
       bhv: [''],
       mobiles: [''],
       boeing: [''],
+      overheadDoor: [''],
+      wool: [''],
+      stationA: [''],
+      chHart: [''],
+      kimberley: [''],
+      viu: [''],
+      studentRes: [''],
+      nrgh: [''],
+      icbc: [''],
+      ooa: [''],
+      sort: [''],
+      lateBagsAddTrip: [''],
+      lateLateBags: [''],
       notes: ['']
     });
   }
@@ -105,6 +118,20 @@ export class CreateDailyLogPage implements OnInit {
             createLogForm.value.bhv,
             createLogForm.value.mobiles,
             createLogForm.value.boeing,
+            createLogForm.value.overheadDoor,
+            createLogForm.value.wool,
+            createLogForm.value.stationA,
+            createLogForm.value.chHart,
+            createLogForm.value.kimberley,
+            createLogForm.value.virLibrary,
+            createLogForm.value.viu,
+            createLogForm.value.studentRes,
+            createLogForm.value.nrgh,
+            createLogForm.value.icbc,
+            createLogForm.value.ooa,
+            createLogForm.value.sort,
+            createLogForm.value.lateBagsAddTrip,
+            createLogForm.value.lateLateBags,
             createLogForm.value.notes
           );
         this.createLogToast();

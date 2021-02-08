@@ -67,6 +67,20 @@ export class LogService {
     bhv: number = null,
     mobiles: number = null,
     boeing: number = null,
+    overheadDoor: number = null,
+    wool: number = null,
+    stationA: number = null,
+    chHart: number = null,
+    kimberley: number = null,
+    virLibrary: number = null,
+    viu: number = null,
+    studentRes: number = null,
+    nrgh: number = null,
+    icbc: number = null,
+    ooa: number = null,
+    sort: number = null,
+    lateBagsAddTrip: number = null,
+    lateLateBags: number = null,
     notes: string = null
   ): Promise<any> {
     const newLogRef: firebase.firestore.DocumentReference = await this.logListCollection.add({});
@@ -100,6 +114,20 @@ export class LogService {
       bhv,
       mobiles,
       boeing,
+      overheadDoor,
+      wool,
+      stationA,
+      chHart,
+      kimberley,
+      virLibrary,
+      viu,
+      studentRes,
+      nrgh,
+      icbc,
+      ooa,
+      sort,
+      lateBagsAddTrip,
+      lateLateBags,
       notes,
       id: newLogRef.id,
     });
@@ -107,7 +135,7 @@ export class LogService {
 
   getLogsCollection(userId): AngularFirestoreCollection<any> {
     return this.firestore.collection(`/userProfile/${userId}/logList`, (ref) =>
-      ref.orderBy('date', 'desc').limit(5)
+      ref.orderBy('date', 'desc').limit(30)
     );
   }
 
