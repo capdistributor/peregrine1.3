@@ -123,7 +123,6 @@ export class CreateDailyLogPage implements OnInit {
             createLogForm.value.stationA,
             createLogForm.value.chHart,
             createLogForm.value.kimberley,
-            createLogForm.value.virLibrary,
             createLogForm.value.viu,
             createLogForm.value.studentRes,
             createLogForm.value.nrgh,
