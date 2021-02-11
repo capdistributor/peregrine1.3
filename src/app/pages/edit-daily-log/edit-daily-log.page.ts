@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ActionSheetController, AlertController, ToastController } from '@ionic/angular';
 import { LogService } from '../../services/log.service';
-import { Observable } from 'rxjs';
-import { FormGroup, FormBuilder } from '@angular/forms';
-import { AngularFirestore } from '@angular/fire/firestore';
+import { combineLatest, from, Observable } from 'rxjs';
+import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
+
 import { SettingsService } from 'src/app/services/settings.service';
+import { map, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-edit-daily-log',
@@ -13,14 +14,14 @@ import { SettingsService } from 'src/app/services/settings.service';
   styleUrls: ['./edit-daily-log.page.scss'],
 })
 export class EditDailyLogPage implements OnInit {
-  public activities;
-  public keys: string[];
-  public log: Observable<any>;
-  public logId: string;
-  public updateLogForm: FormGroup;
+  private logId: string;
+  logForm: FormGroup;
   isLoaded = false;
-  foundActivities: boolean;
-  
+
+  log$: Observable<any>;
+  activities$: Observable<Settings>;
+  activeActivities$: Observable<any>;
+
   constructor(
     public router: Router,
     public route: ActivatedRoute,
@@ -28,65 +29,51 @@ export class EditDailyLogPage implements OnInit {
     public alertCtrl: AlertController,
     public logService: LogService,
     public formBuilder: FormBuilder,
-    private firestore: AngularFirestore,
     public toastCtrl: ToastController,
     private settingsService: SettingsService
   ) {
     this.logId = this.route.snapshot.paramMap.get('logId');
-    this.log = this.logService.getLogDetail(this.logId).valueChanges();
-
-    this.updateLogForm = this.formBuilder.group({
-      date: [''],
-      relays: [''],
-      lateBags: [''],
-      directs: [''],
-      tieOuts: [''],
-      signature: [''],
-      nonSignature: [''],
-      customsCOD: [''],
-      nonBarcoded: [''],
-      cpu: [''],
-      cpu11To50: [''],
-      cpu51AndUp: [''],
-      slb: [''],
-      depotTransfers: [''],
-      rpoClears: [''],
-      latePrios: [''],
-      slbExtractions: [''],
-      manAndVan: [''],
-      stationMain: [''],
-      virl: [''],
-      boxChecks: [''],
-      fedex: [''],
-      redBags: [''],
-      ported: [''],
-      seaplane: [''],
-      bhv: [''],
-      mobiles: [''],
-      boeing: [''],
-      notes: ['']
-    });
+    this.log$ = this.logService.getLogDetail(this.logId).valueChanges();
   }
 
   ngOnInit() {
-    this.settingsService.getSettings().then((settings) => {
-      this.activities = settings;
-      this.keys = Object.keys(settings);
-      this.isLoaded = true;
+    this.activities$ = from(this.settingsService.getSettings())
+      .pipe(
+        tap(() => {
+          this.isLoaded = true;
+        })
+      );
 
-      const keys = Object.keys(this.activities);
-      const foundActivities = keys.filter(key => !!this.activities[key]);
-      this.foundActivities = !!foundActivities.length;
+    combineLatest([
+      this.activities$,
+      this.log$
+    ]).subscribe(([activities, log]) => {
+      this.logForm = this.buildForm(log, activities);
+      if (log.date) {
+        this.handleDateChange(log.date);
+      }
     });
+
+    this.activeActivities$ = this.activities$
+      .pipe(
+        map(activities => {
+          const keys = Object.keys(activities);
+          return keys.map(key => ({
+            id: key,
+            name: activities[key].name,
+            active: activities[key].active
+          }))
+          .filter(activity => activity.active);
+        })
+      );
   }
 
   onSubmitUpdateLog() {
-    this.logService.updateLog(this.logId, this.updateLogForm.value)
+    this.logService.updateLog(this.logId, this.logForm.value)
     .then(
       () => {
         this.router.navigateByUrl('/home');
         this.updateLogToast();
-
       },
       error => {
         console.log(error);
@@ -108,11 +95,11 @@ export class EditDailyLogPage implements OnInit {
           }
         }
       ]
-    })
+    });
     alert.present();
   }
 
-  async updateLogToast () {
+  async updateLogToast() {
     const toast = await this.toastCtrl.create({
       message: 'Daily Log Updated!',
       duration: 1000,
@@ -121,7 +108,7 @@ export class EditDailyLogPage implements OnInit {
     toast.present();
   }
 
-  async deleteLogToast () {
+  async deleteLogToast() {
     const toast = await this.toastCtrl.create({
       message: 'Daily Log Deleted!',
       duration: 1000,
@@ -130,4 +117,40 @@ export class EditDailyLogPage implements OnInit {
     toast.present();
   }
 
+  // use activities[key] to create a formControl and set value from log[key]
+  buildForm(log: Log, activities: Settings) {
+    const today = new Date().toISOString();
+    const formGroup = this.formBuilder.group({
+      date: new FormControl(today)
+    });
+    const keys = Object.keys(activities);
+
+    keys.forEach(key => {
+      formGroup.addControl(key, new FormControl(log[key]));
+    });
+
+    return formGroup;
+  }
+
+  handleDateChange(date: string) {
+    this.logForm.get('date').setValue(date, {
+      onlyself: true
+    });
+  }
+
+  formatDate(dateString) {
+    return new Date(dateString).toISOString().substring(0, 10);
+  }
+
+}
+
+
+export interface Settings {
+  [key: string]: {
+    active: boolean,
+    name: string
+  }
+}
+export interface Log {
+  [key: string]: string | number;
 }
