@@ -39,7 +39,7 @@ export class LogService {
   }
 
   async createLog(
-    date: Date,
+    date: string,
     relays: number = null,
     lateBags: number = null,
     directs: number = null,
@@ -82,6 +82,8 @@ export class LogService {
     lateLateBags: number = null,
     notes: string = null
   ): Promise<any> {
+    const formattedDate = this.formatDate(new Date(date));
+    date = formattedDate;
     const newLogRef: firebase.firestore.DocumentReference = await this.logListCollection.add({});
 
     return newLogRef.update({
@@ -142,6 +144,8 @@ export class LogService {
   }
 
   updateLog(logId, updateLogFormValue) {
+    const formattedDate = this.formatDate(new Date(updateLogFormValue.date));
+    updateLogFormValue.date = formattedDate;
     return this.firestore
       .doc(`/userProfile/${this._userId}/logList/${logId}`)
       .update(updateLogFormValue)
@@ -152,5 +156,9 @@ export class LogService {
 
   deleteLog(logId: string): Promise<any> {
     return this.logListCollection.doc(logId).delete();
+  }
+
+  formatDate(date: Date) {
+    return new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString();
   }
 }

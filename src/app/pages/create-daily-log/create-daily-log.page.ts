@@ -13,8 +13,8 @@ import { ToastController } from '@ionic/angular';
 export class CreateDailyLogPage implements OnInit {
   public activities;
   public createLogForm: FormGroup;
-  today = new Date();
-  todayTimeZoneDate: string = new Date(this.today.getTime() - this.today.getTimezoneOffset() * 60000).toISOString();
+  today = new Date().toISOString();
+  // todayTimeZoneDate: string = new Date(this.today.getTime() - this.today.getTimezoneOffset() * 60000).toISOString();
   isLoaded = false;
   buttonDisabled = false;
   foundActivities: boolean;
@@ -27,7 +27,7 @@ export class CreateDailyLogPage implements OnInit {
     private toastCtrl: ToastController
   ) {
     this.createLogForm = this.formBuilder.group({
-      date: [this.todayTimeZoneDate],
+      date: [this.today],
       relays: [''],
       lateBags: [''],
       directs: [''],

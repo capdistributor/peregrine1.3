@@ -17,7 +17,7 @@
         <ion-list>
           <ion-item>
             <ion-label>Log Date</ion-label>
-            <ion-datetime formControlName="date" type="date" displayFormat="MMM DD YYYY" value="{{ (log | async)?.date.toString().substring(0,10) }}"></ion-datetime>
+            <ion-datetime formControlName="date" type="date" displayFormat="MMM DD YYYY" value="{{ (log | async)?.date }}"></ion-datetime>
           </ion-item>
           <ion-item *ngIf="activities.relays.active">
             <ion-label>Relays</ion-label>
