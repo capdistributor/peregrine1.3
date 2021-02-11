@@ -127,8 +127,60 @@
             <ion-label>Boeing</ion-label>
             <ion-input class="ion-text-right" formControlName="boeing" type="number" placeholder="0"></ion-input>
           </ion-item>
+          <ion-item *ngIf="activities.overheadDoor.active">
+            <ion-label>Overhead Door</ion-label>
+            <ion-input class="ion-text-right" formControlName="overheadDoor" type="number" placeholder="0"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.wool.active">
+            <ion-label>Wool</ion-label>
+            <ion-input class="ion-text-right" formControlName="wool" type="number" placeholder="0"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.stationA.active">
+            <ion-label>Station A</ion-label>
+            <ion-input class="ion-text-right" formControlName="stationA" type="number" placeholder="0"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.chHart.active">
+            <ion-label>CH Hart</ion-label>
+            <ion-input class="ion-text-right" formControlName="chHart" type="number" placeholder="0"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.kimberley.active">
+            <ion-label>Kimberley</ion-label>
+            <ion-input class="ion-text-right" formControlName="kimberley" type="number" placeholder="0"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.viu.active">
+            <ion-label>VIU</ion-label>
+            <ion-input class="ion-text-right" formControlName="viu" type="number" placeholder="0"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.studentRes.active">
+            <ion-label>Student Res</ion-label>
+            <ion-input class="ion-text-right" formControlName="studentRes" type="number" placeholder="0"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.nrgh.active">
+            <ion-label>NRGH</ion-label>
+            <ion-input class="ion-text-right" formControlName="nrgh" type="number" placeholder="0"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.icbc.active">
+            <ion-label>ICBC</ion-label>
+            <ion-input class="ion-text-right" formControlName="icbc" type="number" placeholder="0"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.ooa.active">
+            <ion-label>OOA</ion-label>
+            <ion-input class="ion-text-right" formControlName="ooa" type="number" placeholder="0"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.sort.active">
+            <ion-label>Sort</ion-label>
+            <ion-input class="ion-text-right" formControlName="sort" type="number" placeholder="0"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.lateBagsAddTrip.active">
+            <ion-label>Late Bags Add Trip</ion-label>
+            <ion-input class="ion-text-right" formControlName="lateBagsAddTrip" type="number" placeholder="0"></ion-input>
+          </ion-item>
+          <ion-item *ngIf="activities.lateLateBags.active">
+            <ion-label>Late Late Bags</ion-label>
+            <ion-input class="ion-text-right" formControlName="lateLateBags" type="number" placeholder="0"></ion-input>
+          </ion-item>
           <ion-item>
-            <ion-label>Notes</ion-label>
+            <ion-label>Notes:</ion-label>
             <ion-textarea autoGrow="true" formControlName="notes"></ion-textarea>
           </ion-item>
         </ion-list>

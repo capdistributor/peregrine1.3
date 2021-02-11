@@ -13,8 +13,8 @@ import { ToastController } from '@ionic/angular';
 export class CreateDailyLogPage implements OnInit {
   public activities;
   public createLogForm: FormGroup;
-  today = new Date();
-  todayTimeZoneDate: string = new Date(this.today.getTime() - this.today.getTimezoneOffset() * 60000).toISOString();
+  today = new Date().toISOString();
+  // todayTimeZoneDate: string = new Date(this.today.getTime() - this.today.getTimezoneOffset() * 60000).toISOString();
   isLoaded = false;
   buttonDisabled = false;
   foundActivities: boolean;
@@ -27,7 +27,7 @@ export class CreateDailyLogPage implements OnInit {
     private toastCtrl: ToastController
   ) {
     this.createLogForm = this.formBuilder.group({
-      date: [this.todayTimeZoneDate],
+      date: [this.today],
       relays: [''],
       lateBags: [''],
       directs: [''],
@@ -55,6 +55,19 @@ export class CreateDailyLogPage implements OnInit {
       bhv: [''],
       mobiles: [''],
       boeing: [''],
+      overheadDoor: [''],
+      wool: [''],
+      stationA: [''],
+      chHart: [''],
+      kimberley: [''],
+      viu: [''],
+      studentRes: [''],
+      nrgh: [''],
+      icbc: [''],
+      ooa: [''],
+      sort: [''],
+      lateBagsAddTrip: [''],
+      lateLateBags: [''],
       notes: ['']
     });
   }
@@ -105,6 +118,19 @@ export class CreateDailyLogPage implements OnInit {
             createLogForm.value.bhv,
             createLogForm.value.mobiles,
             createLogForm.value.boeing,
+            createLogForm.value.overheadDoor,
+            createLogForm.value.wool,
+            createLogForm.value.stationA,
+            createLogForm.value.chHart,
+            createLogForm.value.kimberley,
+            createLogForm.value.viu,
+            createLogForm.value.studentRes,
+            createLogForm.value.nrgh,
+            createLogForm.value.icbc,
+            createLogForm.value.ooa,
+            createLogForm.value.sort,
+            createLogForm.value.lateBagsAddTrip,
+            createLogForm.value.lateLateBags,
             createLogForm.value.notes
           );
         this.createLogToast();

@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 
-import { Platform, AlertController } from '@ionic/angular';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
+import { Platform, AlertController, ToastController } from '@ionic/angular';
+// import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { NativeAudio } from '@ionic-native/native-audio/ngx';
 
 import { Location } from '@angular/common';
+import { SwUpdate } from '@angular/service-worker';
 
 @Component({
   selector: 'app-root',
@@ -15,13 +16,17 @@ import { Location } from '@angular/common';
 export class AppComponent {
   constructor(
     private platform: Platform,
-    private splashScreen: SplashScreen,
+    // private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private nativeAudio: NativeAudio,
     private _location: Location,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private swUpdate: SwUpdate,
+    // private toastCtrl: ToastController,
   ) {
     this.nativeAudio.preloadSimple('falcon', 'assets/audio/falcon.mp3');
+
+    this.initializeApp();
 
     this.platform.backButton.subscribeWithPriority(10, (processNextHandler) => {
       console.log('Back press handler!');
@@ -46,14 +51,45 @@ export class AppComponent {
     });
   }
 
-  initializeApp() {
+  initializeApp(): void {
+    console.log("initializing");
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
-      this.splashScreen.hide();
+      // this.splashScreen.hide();
 
       this.statusBar.backgroundColorByHexString('#1A59A5');
     });
+    if (this.swUpdate.available) {
+      console.log("if update available");
+      this.swUpdate.available.subscribe(() => {
+        if (confirm('A new version is available. Load it?'))
+          window.location.reload();
+      });
+    }
   }
+
+  // async ngOnInit() {
+
+  //   this.swUpdate.available.subscribe(async res => {
+  //     const toast = await this.toastCtrl.create({
+  //       message: 'Update available!',
+  //       position: 'bottom',
+  //       buttons: [
+  //         {
+  //           role: 'cancel',
+  //           text: 'Reload'
+  //         }
+  //       ]
+  //     });
+
+  //     await toast.present();
+
+  //     toast
+  //       .onDidDismiss()
+  //       .then(() => this.swUpdate.activateUpdate())
+  //       .then(() => window.location.reload());
+  //   });
+  // }
 
   showExitConfirm() {
     this.alertController.create({

@@ -39,7 +39,7 @@ export class LogService {
   }
 
   async createLog(
-    date: Date,
+    date: string,
     relays: number = null,
     lateBags: number = null,
     directs: number = null,
@@ -67,8 +67,23 @@ export class LogService {
     bhv: number = null,
     mobiles: number = null,
     boeing: number = null,
+    overheadDoor: number = null,
+    wool: number = null,
+    stationA: number = null,
+    chHart: number = null,
+    kimberley: number = null,
+    viu: number = null,
+    studentRes: number = null,
+    nrgh: number = null,
+    icbc: number = null,
+    ooa: number = null,
+    sort: number = null,
+    lateBagsAddTrip: number = null,
+    lateLateBags: number = null,
     notes: string = null
   ): Promise<any> {
+    const formattedDate = this.formatDate(new Date(date));
+    date = formattedDate;
     const newLogRef: firebase.firestore.DocumentReference = await this.logListCollection.add({});
 
     return newLogRef.update({
@@ -100,6 +115,19 @@ export class LogService {
       bhv,
       mobiles,
       boeing,
+      overheadDoor,
+      wool,
+      stationA,
+      chHart,
+      kimberley,
+      viu,
+      studentRes,
+      nrgh,
+      icbc,
+      ooa,
+      sort,
+      lateBagsAddTrip,
+      lateLateBags,
       notes,
       id: newLogRef.id,
     });
@@ -107,7 +135,7 @@ export class LogService {
 
   getLogsCollection(userId): AngularFirestoreCollection<any> {
     return this.firestore.collection(`/userProfile/${userId}/logList`, (ref) =>
-      ref.orderBy('date', 'desc').limit(5)
+      ref.orderBy('date', 'desc').limit(30)
     );
   }
 
@@ -116,6 +144,8 @@ export class LogService {
   }
 
   updateLog(logId, updateLogFormValue) {
+    const formattedDate = this.formatDate(new Date(updateLogFormValue.date));
+    updateLogFormValue.date = formattedDate;
     return this.firestore
       .doc(`/userProfile/${this._userId}/logList/${logId}`)
       .update(updateLogFormValue)
@@ -126,5 +156,9 @@ export class LogService {
 
   deleteLog(logId: string): Promise<any> {
     return this.logListCollection.doc(logId).delete();
+  }
+
+  formatDate(date: Date) {
+    return new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString();
   }
 }

@@ -38,6 +38,19 @@ export class SettingsPage implements OnInit {
     bhv: {active: false, name: 'BHV'},
     mobiles: {active: false, name: 'Mobiles'},
     boeing: {active: false, name: 'Boeing'},
+    overheadDoor: {active: false, name: 'Overhead Door'},
+    wool: {active: false, name: 'Wool'},
+    stationA: {active: false, name: 'Station A'},
+    chHart: {active: false, name: 'CH Hart'},
+    kimberley: {active: false, name: 'Kimberley'},
+    viu: {active: false, name: 'VIU'},
+    studentRes: {active: false, name: 'Student Res'},
+    nrgh: {active: false, name: 'NRGH'},
+    icbc: {active: false, name: 'ICBC'},
+    ooa: {active: false, name: 'OOA'},
+    sort: {active: false, name: 'Sort'},
+    lateBagsAddTrip: {active: false, name: 'Late Bags Add Trip'},
+    lateLateBags: {active: false, name: 'Late Late Bags'}
   };
   keys = Object.keys(this.activities);
 
@@ -70,6 +83,19 @@ export class SettingsPage implements OnInit {
   // BHV
   // Mobiles
   // Boeing
+  // Overhead Door
+  // Wool
+  // Station A
+  // CH Hart
+  // Kimberley
+  // VIU
+  // Student Res
+  // NRGH
+  // ICBC
+  // OOA
+  // Sort
+  // Late Bags Add Trip
+  // Late Late Bags
 
   constructor(
     private fb: FormBuilder,
@@ -87,7 +113,9 @@ export class SettingsPage implements OnInit {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    console.log("init says hi");
+  }
 
   async saveSettingsToast() {
     this.settingsService.setSettings(this.activities).then(() =>{
