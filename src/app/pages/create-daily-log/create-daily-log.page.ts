@@ -73,7 +73,7 @@ export class CreateDailyLogPage implements OnInit {
   }
 
   ngOnInit() {
-    this.settingsService.getSettings().then(settings => {
+    this.settingsService.getSettingsFromStorage().then(settings => {
       this.activities = settings;
       this.isLoaded = true;
 

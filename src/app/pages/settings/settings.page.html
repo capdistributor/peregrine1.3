@@ -15,12 +15,13 @@
       Enable the activities that you will be using in your daily log upload.
       <ion-list>
 
-        <ng-container *ngIf="activities">
-          <ion-item *ngFor="let key of keys">
-
-            <ion-label>{{ activities[key].name }}</ion-label>
-            <ion-toggle [(ngModel)]="activities[key].active"></ion-toggle>
-          </ion-item>
+        <ng-container *ngIf="settingsList$ | async as settingsList">
+          <form [formGroup]="settingsForm">
+            <ion-item *ngFor="let setting of settingsList">
+              <ion-label>{{ setting.name }}</ion-label>
+              <ion-toggle [formControlName]="setting.id"></ion-toggle>
+            </ion-item>
+          </form>
         </ng-container>
 
       </ion-list>

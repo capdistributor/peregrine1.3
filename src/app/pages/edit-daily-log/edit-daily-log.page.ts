@@ -6,7 +6,8 @@ import { combineLatest, from, Observable } from 'rxjs';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 
 import { SettingsService } from 'src/app/services/settings.service';
-import { map, tap } from 'rxjs/operators';
+import { map, startWith, tap } from 'rxjs/operators';
+import { Settings } from '../settings/_settings.masterlist';
 
 @Component({
   selector: 'app-edit-daily-log',
@@ -37,9 +38,9 @@ export class EditDailyLogPage implements OnInit {
   }
 
   ngOnInit() {
-    this.activities$ = from(this.settingsService.getSettings())
+    this.activities$ = from(this.settingsService.settings$)
       .pipe(
-        tap(() => {
+        tap((settings) => {
           this.isLoaded = true;
         })
       );
@@ -54,17 +55,20 @@ export class EditDailyLogPage implements OnInit {
       }
     });
 
+
+
     this.activeActivities$ = this.activities$
       .pipe(
-        map(activities => {
-          const keys = Object.keys(activities);
-          return keys.map(key => ({
-            id: key,
-            name: activities[key].name,
-            active: activities[key].active
-          }))
-          .filter(activity => activity.active);
-        })
+        startWith([]),
+        // map(activities => {
+        //   const keys = Object.keys(activities);
+        //   return keys.map(key => ({
+        //     id: key,
+        //     name: activities[key].name,
+        //     active: activities[key].active
+        //   }))
+        //   .filter(activity => activity.active);
+        // })
       );
   }
 
@@ -128,7 +132,7 @@ export class EditDailyLogPage implements OnInit {
     keys.forEach(key => {
       formGroup.addControl(key, new FormControl(log[key]));
     });
-
+    console.log('formGroup', formGroup.value);
     return formGroup;
   }
 
@@ -144,13 +148,6 @@ export class EditDailyLogPage implements OnInit {
 
 }
 
-
-export interface Settings {
-  [key: string]: {
-    active: boolean,
-    name: string
-  }
-}
 export interface Log {
   [key: string]: string | number;
 }
