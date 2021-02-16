@@ -12,19 +12,18 @@ import { combineLatest } from 'rxjs';
   styleUrls: ['./settings.page.scss'],
 })
 export class SettingsPage implements OnInit {
-  isLoaded = false;
-  settingsForm: FormGroup;
-
   settingsList$ = this.settingsService.settingsList$;
   activeSettings$ = this.settingsService.activeSettings$;
+
+  isLoaded = false;
+  settingsForm: FormGroup;
 
   constructor(
     public router: Router,
     public toastCtrl: ToastController,
     public alertCtrl: AlertController,
     private settingsService: SettingsService
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
     combineLatest([
@@ -37,10 +36,9 @@ export class SettingsPage implements OnInit {
   }
 
   async saveSettingsToast() {
-    this.settingsService.saveSettingsToStorage(this.settingsForm.value).then(() => {
-      this.router.navigateByUrl('/home').then(() => {
-        this.settingsToast();
-      });
+    this.settingsService.saveActiveSettingsToStorage(this.settingsForm.value);
+    this.router.navigateByUrl('/home').then(() => {
+      this.settingsToast();
     });
   }
 
@@ -83,9 +81,14 @@ export class SettingsPage implements OnInit {
   }
 
   private buildForm(settings: Setting[], activeSettings: Settings) {
+    console.log(activeSettings);
     const formGroup = new FormGroup({});
     settings.forEach(setting => {
-      const value = activeSettings[setting.id]?.active || false;
+      let value = false;
+      if (activeSettings && activeSettings[setting.id]) {
+        value = !!activeSettings[setting.id];
+      }
+
       formGroup.addControl(setting.id, new FormControl(value));
     });
 

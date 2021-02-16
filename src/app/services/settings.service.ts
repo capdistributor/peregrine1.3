@@ -1,27 +1,30 @@
 import { Injectable } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Storage } from '@ionic/storage';
-import { of, from } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
+import { filter, map, startWith } from 'rxjs/operators';
 import { Setting, Settings, SETTINGS } from '../pages/settings/_settings.masterlist';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SettingsService {
-  settings$ = of(SETTINGS);
-  settingsList$ = this.settings$.pipe(
-    map(settings => this.listifySettings(settings))
-  );
-  activeSettings$ = from(this.getSettingsFromStorage()).pipe(
-    map((settings) => this.getActiveSettings(settings))
-  );
+  settings$ = new BehaviorSubject<Settings>(this.settings);
+  settingsList$ = new BehaviorSubject<Setting[]>(this.listifySettings(this.settings));
+
+  activeSettings$ = new BehaviorSubject<Settings>({});
   activeSettingsList$ = this.activeSettings$.pipe(
-    map(settings => this.listifySettings(settings))
+    filter(settings => !!settings),
+    map(settings => this.listifySettings(settings)),
+    startWith([])
   );
 
-  constructor(
-    private storage: Storage
-  ) {}
+  constructor(private storage: Storage) {
+    this.getSettingsFromStorage().then(settings => {
+      const active = this.getActiveSettings(settings);
+      this.activeSettings$.next(active);
+    });
+  }
 
   get settings() {
     return SETTINGS;
@@ -35,41 +38,63 @@ export class SettingsService {
       .catch(error => {
         console.log('rejected.', error);
         reject(error);
-      })
-    })
+      });
+    });
+  }
+
+  saveActiveSettingsToStorage(settings) {
+    const active = this.getActiveSettings(settings);
+    this.storage.set('settings', active).then(savedSettings => {
+      this.activeSettings$.next(savedSettings);
+    });
   }
 
   saveSettingsToStorage(settings): Promise<any> {
     return this.storage.set('settings', settings)
+    .then(stuff => {
+      console.log('saved:', stuff);
+    })
     .catch(error => {
-      console.log('error:', error);
+      console.log('storage error:', error);
     });
   }
 
-  public clearStorage() {
+  clearStorage() {
     this.storage.clear().then(() => {
       console.log('all keys cleared');
     });
   }
 
+  buildInitalSettingsForm(): FormGroup {
+    const fields = this.listifySettings(this.settings);
+    const formGroup = new FormGroup({});
+
+    fields.forEach(field => {
+      const fieldControl = new FormControl(field.active);
+      formGroup.addControl(field.id, fieldControl);
+    });
+
+    return formGroup;
+  }
+
   private listifySettings(settings: Settings): Setting[]  {
     const keys = Object.keys(settings);
-    return keys.map(key => ({
-      id: key,
-      name: settings[key].name,
-      active: settings[key].active
-    }));
+    return keys.map(key => {
+      const name = settings[key].name ? settings[key].name : this.settings[key].name;
+      const active = settings[key].active ? settings[key].active : !!settings[key];
+
+      return { id: key, name, active };
+    });
   }
 
   private getActiveSettings(settings: Settings): Settings {
     const keys = Object.keys(settings);
+
     return keys.reduce((obj, key) => {
-      if (settings[key].active) {
-        return {
-          ...obj,
-          [key]: settings[key]
-        };
+      if (settings[key]) {
+        obj = { ...obj, [key]: settings[key] };
       }
+      return obj;
     }, {});
   }
 }

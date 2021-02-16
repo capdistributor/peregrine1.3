@@ -2,12 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ActionSheetController, AlertController, ToastController } from '@ionic/angular';
 import { LogService } from '../../services/log.service';
-import { combineLatest, from, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 
 import { SettingsService } from 'src/app/services/settings.service';
-import { map, startWith, tap } from 'rxjs/operators';
-import { Settings } from '../settings/_settings.masterlist';
+import { Setting } from '../settings/_settings.masterlist';
 
 @Component({
   selector: 'app-edit-daily-log',
@@ -17,11 +16,12 @@ import { Settings } from '../settings/_settings.masterlist';
 export class EditDailyLogPage implements OnInit {
   private logId: string;
   logForm: FormGroup;
-  isLoaded = false;
+  isLoaded = true;
+  hasActiveSettings = true;
 
   log$: Observable<any>;
-  activities$: Observable<Settings>;
-  activeActivities$: Observable<any>;
+  activitiesList$ = this.settingsService.settingsList$;
+  activeActivitiesList$ = this.settingsService.activeSettingsList$;
 
   constructor(
     public router: Router,
@@ -35,41 +35,19 @@ export class EditDailyLogPage implements OnInit {
   ) {
     this.logId = this.route.snapshot.paramMap.get('logId');
     this.log$ = this.logService.getLogDetail(this.logId).valueChanges();
+
+    const initialDate = new Date().toISOString();
+    this.logForm = this.settingsService.buildInitalSettingsForm();
+    this.logForm.addControl('date', new FormControl(initialDate));
+    this.logForm.addControl('id', new FormControl(''));
+    this.logForm.addControl('notes', new FormControl(''));
   }
 
   ngOnInit() {
-    this.activities$ = from(this.settingsService.settings$)
-      .pipe(
-        tap((settings) => {
-          this.isLoaded = true;
-        })
-      );
-
-    combineLatest([
-      this.activities$,
-      this.log$
-    ]).subscribe(([activities, log]) => {
-      this.logForm = this.buildForm(log, activities);
-      if (log.date) {
-        this.handleDateChange(log.date);
-      }
+    this.log$.subscribe((log) => {
+      this.setFormValues(this.logForm, log);
+      this.isLoaded = true;
     });
-
-
-
-    this.activeActivities$ = this.activities$
-      .pipe(
-        startWith([]),
-        // map(activities => {
-        //   const keys = Object.keys(activities);
-        //   return keys.map(key => ({
-        //     id: key,
-        //     name: activities[key].name,
-        //     active: activities[key].active
-        //   }))
-        //   .filter(activity => activity.active);
-        // })
-      );
   }
 
   onSubmitUpdateLog() {
@@ -121,19 +99,19 @@ export class EditDailyLogPage implements OnInit {
     toast.present();
   }
 
-  // use activities[key] to create a formControl and set value from log[key]
-  buildForm(log: Log, activities: Settings) {
-    const today = new Date().toISOString();
-    const formGroup = this.formBuilder.group({
-      date: new FormControl(today)
-    });
-    const keys = Object.keys(activities);
+  setupForm(form: FormGroup, activities: Setting[]) {
+    const initialDate = new Date().toISOString();
+    form.addControl('date', new FormControl(initialDate));
 
-    keys.forEach(key => {
-      formGroup.addControl(key, new FormControl(log[key]));
+    activities.forEach(activity => {
+      form.addControl(activity.id, new FormControl(''));
     });
-    console.log('formGroup', formGroup.value);
-    return formGroup;
+  }
+
+  setFormValues(form: FormGroup, log: Log) {
+    Object.keys(log).forEach(key => {
+      form.get(key).setValue(log[key]);
+    });
   }
 
   handleDateChange(date: string) {
