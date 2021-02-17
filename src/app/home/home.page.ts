@@ -5,6 +5,7 @@ import { Observable, Subscription } from 'rxjs';
 import { MemoService } from '../services/memo.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',

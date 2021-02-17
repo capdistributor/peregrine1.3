@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LogService } from '../../services/log.service';
 import { SettingsService } from 'src/app/services/settings.service';
 import { ToastController } from '@ionic/angular';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-create-daily-log',
@@ -12,133 +13,37 @@ import { ToastController } from '@ionic/angular';
 })
 export class CreateDailyLogPage implements OnInit {
   public activities;
-  public createLogForm: FormGroup;
-  today = new Date().toISOString();
-  // todayTimeZoneDate: string = new Date(this.today.getTime() - this.today.getTimezoneOffset() * 60000).toISOString();
+  logForm: FormGroup;
   isLoaded = false;
   buttonDisabled = false;
   foundActivities: boolean;
+  activeActivitiesList$ = this.settingsService.activeSettingsList$;
 
   constructor(
-    public formBuilder: FormBuilder,
     private router: Router,
     private logService: LogService,
     private settingsService: SettingsService,
     private toastCtrl: ToastController
   ) {
-    this.createLogForm = this.formBuilder.group({
-      date: [this.today],
-      relays: [''],
-      lateBags: [''],
-      directs: [''],
-      tieOuts: [''],
-      signature: [''],
-      nonSignature: [''],
-      customsCOD: [''],
-      nonBarcoded: [''],
-      cpu: [''],
-      cpu11To50: [''],
-      cpu51AndUp: [''],
-      slb: [''],
-      depotTransfers: [''],
-      rpoClears: [''],
-      latePrios: [''],
-      slbExtractions: [''],
-      manAndVan: [''],
-      stationMain: [''],
-      virl: [''],
-      boxChecks: [''],
-      fedex: [''],
-      redBags: [''],
-      ported: [''],
-      seaplane: [''],
-      bhv: [''],
-      mobiles: [''],
-      boeing: [''],
-      overheadDoor: [''],
-      wool: [''],
-      stationA: [''],
-      chHart: [''],
-      kimberley: [''],
-      viu: [''],
-      studentRes: [''],
-      nrgh: [''],
-      icbc: [''],
-      ooa: [''],
-      sort: [''],
-      lateBagsAddTrip: [''],
-      lateLateBags: [''],
-      notes: ['']
-    });
+    this.logForm = this.buildLogForm();
+    this.isLoaded = true;
   }
 
   ngOnInit() {
-    this.settingsService.getSettingsFromStorage().then(settings => {
-      this.activities = settings;
-      this.isLoaded = true;
-
-      const keys = Object.keys(this.activities);
-      const foundActivities = keys.filter(key => !!this.activities[key]);
-      this.foundActivities = !!foundActivities.length;
-    });
   }
 
-  createLog(createLogForm) {
+  createLog() {
     this.buttonDisabled = true;
-    this.router.navigateByUrl('/home')
-      .then(
-        () => {
-        this.logService
-          .createLog(
-            createLogForm.value.date,
-            createLogForm.value.relays,
-            createLogForm.value.lateBags,
-            createLogForm.value.directs,
-            createLogForm.value.tieOuts,
-            createLogForm.value.signature,
-            createLogForm.value.nonSignature,
-            createLogForm.value.customsCOD,
-            createLogForm.value.nonBarcoded,
-            createLogForm.value.cpu,
-            createLogForm.value.cpu11To50,
-            createLogForm.value.cpu51AndUp,
-            createLogForm.value.slb,
-            createLogForm.value.depotTransfers,
-            createLogForm.value.rpoClears,
-            createLogForm.value.latePrios,
-            createLogForm.value.slbExtractions,
-            createLogForm.value.manAndVan,
-            createLogForm.value.stationMain,
-            createLogForm.value.virl,
-            createLogForm.value.boxChecks,
-            createLogForm.value.fedex,
-            createLogForm.value.redBags,
-            createLogForm.value.ported,
-            createLogForm.value.seaplane,
-            createLogForm.value.bhv,
-            createLogForm.value.mobiles,
-            createLogForm.value.boeing,
-            createLogForm.value.overheadDoor,
-            createLogForm.value.wool,
-            createLogForm.value.stationA,
-            createLogForm.value.chHart,
-            createLogForm.value.kimberley,
-            createLogForm.value.viu,
-            createLogForm.value.studentRes,
-            createLogForm.value.nrgh,
-            createLogForm.value.icbc,
-            createLogForm.value.ooa,
-            createLogForm.value.sort,
-            createLogForm.value.lateBagsAddTrip,
-            createLogForm.value.lateLateBags,
-            createLogForm.value.notes
-          );
-        this.createLogToast();
-        },
-        error => {
-          console.log(error);
+
+    this.logService.createLog(this.logForm.value)
+      .then(result => {
+        if (result) {
+          console.log('log created:', result);
+          this.router.navigateByUrl('/home').then(() => {
+            this.createLogToast();
+          });
         }
-      );
+      });
   }
 
   async createLogToast() {
@@ -148,5 +53,20 @@ export class CreateDailyLogPage implements OnInit {
       position: 'top'
     });
     toast.present();
+  }
+
+  private buildLogForm(): FormGroup {
+    const formGroup = new FormGroup({});
+    const initialDate = new Date().toISOString();
+
+    this.settingsService.settingsList.forEach(field => {
+      const fieldControl = new FormControl(0);
+      formGroup.addControl(field.id, fieldControl);
+    });
+
+    formGroup.addControl('date', new FormControl(initialDate));
+    formGroup.addControl('notes', new FormControl(''));
+
+    return formGroup;
   }
 }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Storage } from '@ionic/storage';
 import { BehaviorSubject } from 'rxjs';
-import { filter, map, startWith } from 'rxjs/operators';
+import { filter, map, startWith, tap } from 'rxjs/operators';
 import { Setting, Settings, SETTINGS } from '../pages/settings/_settings.masterlist';
 
 @Injectable({
@@ -10,7 +10,7 @@ import { Setting, Settings, SETTINGS } from '../pages/settings/_settings.masterl
 })
 export class SettingsService {
   settings$ = new BehaviorSubject<Settings>(this.settings);
-  settingsList$ = new BehaviorSubject<Setting[]>(this.listifySettings(this.settings));
+  settingsList$ = new BehaviorSubject<Setting[]>(this.settingsList);
 
   activeSettings$ = new BehaviorSubject<Settings>({});
   activeSettingsList$ = this.activeSettings$.pipe(
@@ -28,6 +28,10 @@ export class SettingsService {
 
   get settings() {
     return SETTINGS;
+  }
+
+  get settingsList() {
+    return this.listifySettings(this.settings);
   }
 
   getSettingsFromStorage(): Promise<Settings> {

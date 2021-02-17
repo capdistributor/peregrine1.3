@@ -10,184 +10,49 @@
 <ion-content *ngIf="isLoaded" padding>
   <ion-card>
     <ion-card-content>
-      <form [formGroup]="createLogForm">
-        <div *ngIf="!foundActivities" style="color: red">
-          No activities have been activated in the app settings. The app will not function properly.
-        </div>
+      <form *ngIf="(activeActivitiesList$ | async).length > 0; else noSettings" [formGroup]="logForm">
         <ion-list>
           <ion-item>
-              <ion-label>Log Date</ion-label>
-              <ion-datetime formControlName="date" type="date" displayFormat="MMM DD YYYY" ></ion-datetime>
+            <ion-label>Log Date</ion-label>
+            <ion-datetime
+              formControlName="date"
+              type="date"
+              displayFormat="MMM DD YYYY"
+              (ionChange)="handleDateChange($event.target.value)"
+            ></ion-datetime>
           </ion-item>
-          <ion-item *ngIf="activities.relays.active">
-            <ion-label>Relays</ion-label>
-            <ion-input class="ion-text-right" formControlName="relays" type="number" placeholder="0"></ion-input>
+
+          <ion-item *ngFor="let activity of activeActivitiesList$ | async">
+            <ion-label>{{ activity.name }}</ion-label>
+            <ion-input
+              class="ion-text-right"
+              [formControlName]="activity.id"
+              type="number"
+            ></ion-input>
           </ion-item>
-          <ion-item *ngIf="activities.lateBags.active">
-            <ion-label>Late Bags</ion-label>
-            <ion-input class="ion-text-right" formControlName="lateBags" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.directs.active">
-            <ion-label>Directs</ion-label>
-            <ion-input class="ion-text-right" formControlName="directs" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.tieOuts.active">
-            <ion-label>Tie Outs</ion-label>
-            <ion-input class="ion-text-right" formControlName="tieOuts" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.signature.active">
-            <ion-label>Signature</ion-label>
-            <ion-input class="ion-text-right" formControlName="signature" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.nonSignature.active">
-            <ion-label>Non-Signature</ion-label>
-            <ion-input class="ion-text-right" formControlName="nonSignature" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.customsCOD.active">
-            <ion-label>Customs COD</ion-label>
-            <ion-input class="ion-text-right" formControlName="customsCOD" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.nonBarcoded.active">
-            <ion-label>Non-Barcoded</ion-label>
-            <ion-input class="ion-text-right" formControlName="nonBarcoded" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.cpu.active">
-            <ion-label>CPU</ion-label>
-            <ion-input class="ion-text-right" formControlName="cpu" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.cpu11To50.active">
-            <ion-label>CPU 11-50</ion-label>
-            <ion-input class="ion-text-right" formControlName="cpu11To50" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.cpu51AndUp.active">
-            <ion-label>CPU 51+</ion-label>
-            <ion-input class="ion-text-right" formControlName="cpu51AndUp" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.slb.active">
-            <ion-label>SLB</ion-label>
-            <ion-input class="ion-text-right" formControlName="slb" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.depotTransfers.active">
-            <ion-label>Depot Transfers</ion-label>
-            <ion-input class="ion-text-right" formControlName="depotTransfers" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.rpoClears.active">
-            <ion-label>RPO Clears</ion-label>
-            <ion-input class="ion-text-right" formControlName="rpoClears" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.latePrios.active">
-            <ion-label>Late Prios</ion-label>
-            <ion-input class="ion-text-right" formControlName="latePrios" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.slbExtractions.active">
-            <ion-label>SLB Extractions</ion-label>
-            <ion-input class="ion-text-right" formControlName="slbExtractions" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.manAndVan.active">
-            <ion-label>Man and Van</ion-label>
-            <ion-input class="ion-text-right" formControlName="manAndVan" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.stationMain.active">
-            <ion-label>Station Main</ion-label>
-            <ion-input class="ion-text-right" formControlName="stationMain" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.virl.active">
-            <ion-label>VIRL</ion-label>
-            <ion-input class="ion-text-right" formControlName="virl" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.boxChecks.active">
-            <ion-label>Box Checks</ion-label>
-            <ion-input class="ion-text-right" formControlName="boxChecks" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.fedex.active">
-            <ion-label>Fedex</ion-label>
-            <ion-input class="ion-text-right" formControlName="fedex" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.redBags.active">
-            <ion-label>Red Bags</ion-label>
-            <ion-input class="ion-text-right" formControlName="redBags" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.ported.active">
-            <ion-label>Ported</ion-label>
-            <ion-input class="ion-text-right" formControlName="ported" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.seaplane.active">
-            <ion-label>Seaplane</ion-label>
-            <ion-input class="ion-text-right" formControlName="seaplane" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.bhv.active">
-            <ion-label>BHV</ion-label>
-            <ion-input class="ion-text-right" formControlName="bhv" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.mobiles.active">
-            <ion-label>Mobiles</ion-label>
-            <ion-input class="ion-text-right" formControlName="mobiles" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.boeing.active">
-            <ion-label>Boeing</ion-label>
-            <ion-input class="ion-text-right" formControlName="boeing" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.overheadDoor.active">
-            <ion-label>Overhead Door</ion-label>
-            <ion-input class="ion-text-right" formControlName="overheadDoor" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.wool.active">
-            <ion-label>Wool</ion-label>
-            <ion-input class="ion-text-right" formControlName="wool" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.stationA.active">
-            <ion-label>Station A</ion-label>
-            <ion-input class="ion-text-right" formControlName="stationA" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.chHart.active">
-            <ion-label>CH Hart</ion-label>
-            <ion-input class="ion-text-right" formControlName="chHart" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.kimberley.active">
-            <ion-label>Kimberley</ion-label>
-            <ion-input class="ion-text-right" formControlName="kimberley" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.viu.active">
-            <ion-label>VIU</ion-label>
-            <ion-input class="ion-text-right" formControlName="viu" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.studentRes.active">
-            <ion-label>Student Res</ion-label>
-            <ion-input class="ion-text-right" formControlName="studentRes" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.nrgh.active">
-            <ion-label>NRGH</ion-label>
-            <ion-input class="ion-text-right" formControlName="nrgh" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.icbc.active">
-            <ion-label>ICBC</ion-label>
-            <ion-input class="ion-text-right" formControlName="icbc" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.ooa.active">
-            <ion-label>OOA</ion-label>
-            <ion-input class="ion-text-right" formControlName="ooa" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.sort.active">
-            <ion-label>Sort</ion-label>
-            <ion-input class="ion-text-right" formControlName="sort" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.lateBagsAddTrip.active">
-            <ion-label>Late Bags Add Trip</ion-label>
-            <ion-input class="ion-text-right" formControlName="lateBagsAddTrip" type="number" placeholder="0"></ion-input>
-          </ion-item>
-          <ion-item *ngIf="activities.lateLateBags.active">
-            <ion-label>Late Late Bags</ion-label>
-            <ion-input class="ion-text-right" formControlName="lateLateBags" type="number" placeholder="0"></ion-input>
-          </ion-item>
+
           <ion-item>
             <ion-label>Notes:</ion-label>
             <ion-textarea autoGrow="true" formControlName="notes"></ion-textarea>
           </ion-item>
         </ion-list>
-        <ion-button expand="block" (click)="createLog(createLogForm)" [disabled]="buttonDisabled">
+
+        <ion-button
+          expand="block"
+          [disabled]="buttonDisabled"
+          (click)="createLog()">
           Upload Daily Log
         </ion-button>
       </form>
+
     </ion-card-content>
   </ion-card>
 </ion-content>
+
+<ng-template #noSettings>
+  <ion-item>
+    <div style="color: red">
+      No activities have been activated in the app settings. The app will not function properly.
+    </div>
+  </ion-item>
+</ng-template>

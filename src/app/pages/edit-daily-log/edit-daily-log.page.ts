@@ -39,7 +39,6 @@ export class EditDailyLogPage implements OnInit {
     const initialDate = new Date().toISOString();
     this.logForm = this.settingsService.buildInitalSettingsForm();
     this.logForm.addControl('date', new FormControl(initialDate));
-    this.logForm.addControl('id', new FormControl(''));
     this.logForm.addControl('notes', new FormControl(''));
   }
 
@@ -52,15 +51,13 @@ export class EditDailyLogPage implements OnInit {
 
   onSubmitUpdateLog() {
     this.logService.updateLog(this.logId, this.logForm.value)
-    .then(
-      () => {
+    .then(() => {
         this.router.navigateByUrl('/home');
         this.updateLogToast();
       },
       error => {
         console.log(error);
-      }
-    );
+      });
   }
 
   async onSubmitDeleteLog(): Promise<void> {

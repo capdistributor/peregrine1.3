@@ -5,11 +5,12 @@ import {
   AngularFirestoreDocument,
 } from '@angular/fire/firestore';
 import * as firebase from 'firebase/app';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 // need to import authservice, or do I?
 import { AuthService } from './auth.service';
-import { filter, map, switchMap, tap } from 'rxjs/operators';
+import { filter, map, switchMap, take, tap } from 'rxjs/operators';
+import { FormGroup } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root',
@@ -17,8 +18,7 @@ import { filter, map, switchMap, tap } from 'rxjs/operators';
 export class LogService {
   private userId$ = this.authService.currentUserAuth$.pipe(
     filter(user => !!user),
-    map((user) => user.uid),
-    tap((id) => (this._userId = id))
+    map((user) => user.uid)
   );
   private _userId: string;
 
@@ -31,106 +31,33 @@ export class LogService {
     public authService: AuthService
   ) {
     this.logList$ = this.userId$.pipe(
-      tap((id) => {
+      map((id) => {
         this.logListCollection = this.getLogsCollection(id);
       }),
-      switchMap(() => this.logListCollection.valueChanges())
+      switchMap(() => this.logListCollection.snapshotChanges()),
+      map(snapshot => snapshot.map(snap => {
+        const data = snap.payload.doc.data();
+        const id = snap.payload.doc.id;
+        return { id, ...data };
+      }))
     );
+
+    this.userId$.pipe(take(1))
+      .subscribe(id => {
+        this._userId = id;
+      });
   }
 
-  async createLog(
-    date: string,
-    relays: number = null,
-    lateBags: number = null,
-    directs: number = null,
-    tieOuts: number = null,
-    signature: number = null,
-    nonSignature: number = null,
-    customsCOD: number = null,
-    nonBarcoded: number = null,
-    cpu: number = null,
-    cpu11To50: number = null,
-    cpu51AndUp: number = null,
-    slb: number = null,
-    depotTransfers: number = null,
-    rpoClears: number = null,
-    latePrios: number = null,
-    slbExtractions: number = null,
-    manAndVan: number = null,
-    stationMain: number = null,
-    virl: number = null,
-    boxChecks: number = null,
-    fedex: number = null,
-    redBags: number = null,
-    ported: number = null,
-    seaplane: number = null,
-    bhv: number = null,
-    mobiles: number = null,
-    boeing: number = null,
-    overheadDoor: number = null,
-    wool: number = null,
-    stationA: number = null,
-    chHart: number = null,
-    kimberley: number = null,
-    viu: number = null,
-    studentRes: number = null,
-    nrgh: number = null,
-    icbc: number = null,
-    ooa: number = null,
-    sort: number = null,
-    lateBagsAddTrip: number = null,
-    lateLateBags: number = null,
-    notes: string = null
-  ): Promise<any> {
-    const formattedDate = this.formatDate(new Date(date));
-    date = formattedDate;
-    const newLogRef: firebase.firestore.DocumentReference = await this.logListCollection.add({});
+  createLog(newLog) {
+      const formattedDate = this.formatDate(new Date(newLog.date));
+      newLog.date = formattedDate;
 
-    return newLogRef.update({
-      date,
-      relays,
-      lateBags,
-      directs,
-      tieOuts,
-      signature,
-      nonSignature,
-      customsCOD,
-      nonBarcoded,
-      cpu,
-      cpu11To50,
-      cpu51AndUp,
-      slb,
-      depotTransfers,
-      rpoClears,
-      latePrios,
-      slbExtractions,
-      manAndVan,
-      stationMain,
-      virl,
-      boxChecks,
-      fedex,
-      redBags,
-      ported,
-      seaplane,
-      bhv,
-      mobiles,
-      boeing,
-      overheadDoor,
-      wool,
-      stationA,
-      chHart,
-      kimberley,
-      viu,
-      studentRes,
-      nrgh,
-      icbc,
-      ooa,
-      sort,
-      lateBagsAddTrip,
-      lateLateBags,
-      notes,
-      id: newLogRef.id,
-    });
+      return this.firestore.collection(`/userProfile/${this._userId}/logList`).add(newLog)
+        .then(doc => doc.id)
+        .catch(error => {
+          console.error('Error creating document: ', error);
+          return false;
+        });
   }
 
   getLogsCollection(userId): AngularFirestoreCollection<any> {
@@ -149,8 +76,8 @@ export class LogService {
     return this.firestore
       .doc(`/userProfile/${this._userId}/logList/${logId}`)
       .update(updateLogFormValue)
-      .then(function (res) {
-        console.log('Document successfully updated!', res);
+      .then(res => {
+        console.log('Document successfully updated!');
       });
   }
 
