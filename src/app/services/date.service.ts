@@ -9,7 +9,8 @@ export class DateService {
 
   /**
    * Returns ISO date string.
-   * e.g. "2021-02-18T17:18:42.689Z"
+   * Good for saving to DB.
+   * @returns string e.g. "2021-02-18T17:18:42.689Z"
    */
   longFormat(date: Date | string) {
     if (typeof date === 'string') {
@@ -21,7 +22,8 @@ export class DateService {
 
   /**
    * Returns short date string.
-   * e.g. "2021-02-18"
+   * Good for human-readability.
+   * @returns string e.g. "2021-02-18"
    */
   shortFormat(date: Date | string) {
     if (typeof date === 'string') {
