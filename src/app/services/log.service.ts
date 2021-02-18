@@ -49,15 +49,15 @@ export class LogService {
   }
 
   createLog(newLog) {
-      const formattedDate = this.formatDate(new Date(newLog.date));
-      newLog.date = formattedDate;
+    const formattedDate = this.formatDate(new Date(newLog.date));
+    newLog.date = formattedDate;
 
-      return this.firestore.collection(`/userProfile/${this._userId}/logList`).add(newLog)
-        .then(doc => doc.id)
-        .catch(error => {
-          console.error('Error creating document: ', error);
-          return false;
-        });
+    return this.firestore.collection(`/userProfile/${this._userId}/logList`).add(newLog)
+      .then(doc => doc.id)
+      .catch(error => {
+        console.error('Error creating document: ', error);
+        return false;
+      });
   }
 
   getLogsCollection(userId): AngularFirestoreCollection<any> {
