@@ -11,6 +11,7 @@ import { Observable, of } from 'rxjs';
 import { AuthService } from './auth.service';
 import { filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { FormGroup } from '@angular/forms';
+import { DateService } from './date.service';
 
 @Injectable({
   providedIn: 'root',
@@ -28,7 +29,8 @@ export class LogService {
 
   constructor(
     private firestore: AngularFirestore,
-    public authService: AuthService
+    public authService: AuthService,
+    private dateService: DateService
   ) {
     this.logList$ = this.userId$.pipe(
       map((id) => {
@@ -85,7 +87,7 @@ export class LogService {
     return this.logListCollection.doc(logId).delete();
   }
 
-  formatDate(date: Date) {
-    return new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString();
+  private formatDate(date: Date) {
+    return this.dateService.longFormat(date);
   }
 }

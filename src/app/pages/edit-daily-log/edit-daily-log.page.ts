@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { SettingsService } from 'src/app/services/settings.service';
 import { Setting } from '../settings/_settings.masterlist';
+import { DateService } from 'src/app/services/date.service';
 
 @Component({
   selector: 'app-edit-daily-log',
@@ -30,7 +31,8 @@ export class EditDailyLogPage implements OnInit {
     public logService: LogService,
     public formBuilder: FormBuilder,
     public toastCtrl: ToastController,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private dateService: DateService
   ) {
     this.logId = this.route.snapshot.paramMap.get('logId');
     this.log$ = this.logService.getLogDetail(this.logId).valueChanges();
@@ -118,8 +120,8 @@ export class EditDailyLogPage implements OnInit {
     });
   }
 
-  formatDate(dateString) {
-    return new Date(dateString).toISOString().substring(0, 10);
+  formatDate(date: string) {
+    return this.dateService.shortFormat(date);
   }
 
 }
