@@ -4,7 +4,6 @@ import { ActionSheetController, AlertController, ToastController } from '@ionic/
 import { LogService } from '../../services/log.service';
 import { Observable } from 'rxjs';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
-
 import { SettingsService } from 'src/app/services/settings.service';
 import { Setting } from '../settings/_settings.masterlist';
 
@@ -18,7 +17,7 @@ export class EditDailyLogPage implements OnInit {
   logForm: FormGroup;
   isLoaded = true;
   hasActiveSettings = true;
-
+  noSettings;
   log$: Observable<any>;
   activitiesList$ = this.settingsService.settingsList$;
   activeActivitiesList$ = this.settingsService.activeSettingsList$;
@@ -107,7 +106,9 @@ export class EditDailyLogPage implements OnInit {
 
   setFormValues(form: FormGroup, log: Log) {
     Object.keys(log).forEach(key => {
-      form.get(key).setValue(log[key]);
+      if (key !== 'id') {
+        form.get(key).setValue(log[key]);
+      }
     });
   }
 
