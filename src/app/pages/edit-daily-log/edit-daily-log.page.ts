@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ActionSheetController, AlertController, ToastController } from '@ionic/angular';
-import { LogService } from '../../services/log.service';
-import { Observable } from 'rxjs';
+import { Log, LogService } from '../../services/log.service';
+import { combineLatest, Observable } from 'rxjs';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { SettingsService } from 'src/app/services/settings.service';
 import { Setting } from '../settings/_settings.masterlist';
 import { DateService } from 'src/app/services/date.service';
+import { map, startWith, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-edit-daily-log',
@@ -18,10 +19,11 @@ export class EditDailyLogPage implements OnInit {
   logForm: FormGroup;
   isLoaded = true;
   hasActiveSettings = true;
-  noSettings;
-  log$: Observable<any>;
+
+  log$: Observable<Log>;
   activitiesList$ = this.settingsService.settingsList$;
-  activeActivitiesList$ = this.settingsService.activeSettingsList$;
+  activeSettingsList$ = this.settingsService.activeSettingsList$;
+  visibleActivities$: Observable<Partial<Setting>[]>;
 
   constructor(
     public router: Router,
@@ -41,10 +43,19 @@ export class EditDailyLogPage implements OnInit {
     this.logForm = this.settingsService.buildInitalSettingsForm();
     this.logForm.addControl('date', new FormControl(initialDate));
     this.logForm.addControl('notes', new FormControl(''));
+
+    this.visibleActivities$ = combineLatest([
+      this.log$,
+      this.activeSettingsList$
+    ]).pipe(
+      map(([log, activeSettings]) => this.getVisibleActivities(log, activeSettings)),
+      startWith([]),
+      tap(() => this.isLoaded = true)
+    );
   }
 
   ngOnInit() {
-    this.log$.subscribe((log) => {
+    this.log$.subscribe(log => {
       this.setFormValues(this.logForm, log);
       this.isLoaded = true;
     });
@@ -97,15 +108,6 @@ export class EditDailyLogPage implements OnInit {
     toast.present();
   }
 
-  setupForm(form: FormGroup, activities: Setting[]) {
-    const initialDate = new Date().toISOString();
-    form.addControl('date', new FormControl(initialDate));
-
-    activities.forEach(activity => {
-      form.addControl(activity.id, new FormControl(''));
-    });
-  }
-
   setFormValues(form: FormGroup, log: Log) {
     Object.keys(log).forEach(key => {
       if (key !== 'id') {
@@ -124,8 +126,30 @@ export class EditDailyLogPage implements OnInit {
     return this.dateService.shortFormat(date);
   }
 
-}
+  private getLogActivities(log: Log): Partial<Setting>[] {
+    const masterList = this.settingsService.settings;
+    const skipKeys = ['date', 'notes', 'id'];
+    const logKeys = Object.keys(log).filter(key => !skipKeys.includes(key) && log[key]);
 
-export interface Log {
-  [key: string]: string | number;
+    return logKeys
+      .map(key => {
+        const { name } = masterList[key];
+        return { id: key, name};
+      })
+      .filter(activity => activity);
+  }
+
+  private getVisibleActivities(log: Log, activeSettings: Setting[]): Partial<Setting>[] {
+    const logActivities = this.getLogActivities(log);
+
+    return activeSettings.reduce((list, setting) => {
+      // if an activeSetting is falsy (zero) in the log, add it to logActivities anyway.
+      if (!log[setting.id]) {
+        const { id, name } = setting;
+        list.push({ id, name });
+      }
+
+      return list;
+    }, logActivities);
+  }
 }

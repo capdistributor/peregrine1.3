@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Storage } from '@ionic/storage';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { filter, map, startWith, tap } from 'rxjs/operators';
 import { Setting, Settings, SETTINGS } from '../pages/settings/_settings.masterlist';
 
@@ -13,7 +13,7 @@ export class SettingsService {
   settingsList$ = new BehaviorSubject<Setting[]>(this.settingsList);
 
   activeSettings$ = new BehaviorSubject<Settings>({});
-  activeSettingsList$ = this.activeSettings$.pipe(
+  activeSettingsList$: Observable<Setting[]> = this.activeSettings$.pipe(
     filter(settings => !!settings),
     map(settings => this.listifySettings(settings)),
     startWith([])

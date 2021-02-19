@@ -4,13 +4,11 @@ import {
   AngularFirestoreCollection,
   AngularFirestoreDocument,
 } from '@angular/fire/firestore';
-import * as firebase from 'firebase/app';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 
 // need to import authservice, or do I?
 import { AuthService } from './auth.service';
-import { filter, map, switchMap, take, tap } from 'rxjs/operators';
-import { FormGroup } from '@angular/forms';
+import { filter, map, switchMap, take } from 'rxjs/operators';
 import { DateService } from './date.service';
 
 @Injectable({
@@ -23,7 +21,7 @@ export class LogService {
   );
   private _userId: string;
 
-  public logList$: Observable<any>;
+  public logList$: Observable<Log[]>;
   private logListCollection: AngularFirestoreCollection<any>;
   logs: Observable<any>;
 
@@ -50,7 +48,7 @@ export class LogService {
       });
   }
 
-  createLog(newLog) {
+  createLog(newLog: Log) {
     const formattedDate = this.formatDate(new Date(newLog.date));
     newLog.date = formattedDate;
 
@@ -72,7 +70,7 @@ export class LogService {
     return this.firestore.doc(`/userProfile/${this._userId}/logList/${logId}`);
   }
 
-  updateLog(logId, updateLogFormValue) {
+  updateLog(logId, updateLogFormValue: Log) {
     const formattedDate = this.formatDate(new Date(updateLogFormValue.date));
     updateLogFormValue.date = formattedDate;
     return this.firestore
@@ -90,4 +88,10 @@ export class LogService {
   private formatDate(date: Date) {
     return this.dateService.longFormat(date);
   }
+}
+
+export interface Log {
+  date: string;
+  notes: string;
+  [key: string]: number | string;
 }

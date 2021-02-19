@@ -76,7 +76,6 @@ export class HomePage implements OnInit {
   userLogout(): Promise<void> {
     return this.authService.logout().then(() => {
       this.router.navigateByUrl('/login');
-      //console.log('logging out, yo');
     });
   }
 }

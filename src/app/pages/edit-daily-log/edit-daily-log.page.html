@@ -7,10 +7,10 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content *ngIf="isLoaded" padding>
+<ion-content padding>
   <ion-card>
     <ion-card-content>
-      <form *ngIf="(activeActivitiesList$ | async).length > 0; else noSettings" [formGroup]="logForm">
+      <form *ngIf="(visibleActivities$ | async).length > 0; else noSettings" [formGroup]="logForm">
 
         <ion-list>
           <ion-item>
@@ -23,7 +23,7 @@
             ></ion-datetime>
           </ion-item>
 
-          <ion-item *ngFor="let activity of activeActivitiesList$ | async">
+          <ion-item *ngFor="let activity of visibleActivities$ | async">
             <ion-label>{{ activity.name }}</ion-label>
             <ion-input
               class="ion-text-right"
@@ -37,16 +37,16 @@
             <ion-textarea autoGrow="true" formControlName="notes"></ion-textarea>
           </ion-item>
         </ion-list>
-
-        <section>
-          <ion-button size="large" expand="block" (click)="onSubmitUpdateLog()">
-            Confirm Daily Log Edit
-          </ion-button>
-          <ion-button size="small" expand="block" color="danger" (click)="onSubmitDeleteLog()">
-            Delete this Log
-          </ion-button>
-        </section>
       </form>
+
+      <section>
+        <ion-button size="large" expand="block" (click)="onSubmitUpdateLog()">
+          Confirm Daily Log Edit
+        </ion-button>
+        <ion-button size="small" expand="block" color="danger" (click)="onSubmitDeleteLog()">
+          Delete this Log
+        </ion-button>
+      </section>
     </ion-card-content>
   </ion-card>
 </ion-content>
