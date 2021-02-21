@@ -46,6 +46,12 @@ export class CreateDailyLogPage implements OnInit {
       });
   }
 
+  handleDateChange(date: string) {
+    this.logForm.get('date').setValue(date, {
+      onlyself: true
+    });
+  }
+
   async createLogToast() {
     const toast = await this.toastCtrl.create({
       message: 'Daily Log Uploaded!',
