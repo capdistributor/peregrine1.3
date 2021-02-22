@@ -52,6 +52,18 @@ export class CreateDailyLogPage implements OnInit {
     });
   }
 
+  handleOnFocus(formControlName: string){
+    if (this.logForm.get(formControlName).value === 0) {
+      this.logForm.get(formControlName).setValue(null);
+    }
+  }
+
+  handleOnBlur(formControlName: string){
+    if (this.logForm.get(formControlName).value === null) {
+      this.logForm.get(formControlName).setValue(0);
+    }
+  }
+
   async createLogToast() {
     const toast = await this.toastCtrl.create({
       message: 'Daily Log Uploaded!',

@@ -28,6 +28,8 @@
               class="ion-text-right"
               [formControlName]="activity.id"
               type="number"
+              (ionFocus)="handleOnFocus(activity.id)"
+              (ionBlur)="handleOnBlur(activity.id)"
             ></ion-input>
           </ion-item>
 

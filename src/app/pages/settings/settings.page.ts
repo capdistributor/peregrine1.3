@@ -81,7 +81,6 @@ export class SettingsPage implements OnInit {
   }
 
   private buildForm(settings: Setting[], activeSettings: Settings) {
-    console.log(activeSettings);
     const formGroup = new FormGroup({});
     settings.forEach(setting => {
       let value = false;
