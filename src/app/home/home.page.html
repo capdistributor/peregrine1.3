@@ -2,13 +2,16 @@
   <ion-toolbar>
 
     <ion-buttons slot="end">
-      <ion-button routerLink="/instructions">
+      <ion-button *ngIf="isAdmin$ | async" routerLink="/admin" title="Admin Zone">
+        <ion-icon slot="icon-only" name="medical-outline" color="danger"></ion-icon>
+      </ion-button>
+      <ion-button routerLink="/instructions" title="Instructions">
         <ion-icon slot="icon-only" name="help"></ion-icon>
       </ion-button>
-      <ion-button routerLink="/settings">
+      <ion-button routerLink="/settings" title="Settings">
         <ion-icon slot="icon-only" name="settings"></ion-icon>
       </ion-button>
-      <ion-button (click)="confirmLogout()">
+      <ion-button title="Sign Out" (click)="confirmLogout()">
         <ion-icon slot="icon-only" name="log-out"></ion-icon>
       </ion-button>
     </ion-buttons>

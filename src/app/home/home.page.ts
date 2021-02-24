@@ -5,7 +5,7 @@ import { Observable, Subscription } from 'rxjs';
 import { MemoService } from '../services/memo.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
-import { tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
@@ -13,9 +13,11 @@ import { tap } from 'rxjs/operators';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage implements OnInit {
-  public logList$: Observable<any>;
+  logList$: Observable<any>;
   unreadMemoStatus$: Observable<boolean> = this.memoService.unconfirmedMemosExist();
-  public unsubscribeBackEvent: Subscription;
+  unsubscribeBackEvent: Subscription;
+  isAdmin$ = this.authService.currentUserProfile$
+    .pipe(map(user => user.isAdmin));
 
   constructor(
     private authService: AuthService,
@@ -28,34 +30,7 @@ export class HomePage implements OnInit {
 
   ngOnInit() {
     this.logList$ = this.logService.logList$;
-    // this.initializeBackButtonCustomHandler();
   }
-
-  // ionViewWillLeave() {
-  //   this.unsubscribeBackEvent;
-  // }
-
-  // initializeBackButtonCustomHandler(): void {
-  //   this.unsubscribeBackEvent = this.platform.backButton.subscribeWithPriority(10, () => {
-  //     this.confirmExit();
-  //   })
-  // }
-
-  // async confirmExit() {
-  //   const alert = await this.alertCtrl.create({
-  //     message: 'Are you sure you want quit?',
-  //     buttons: [
-  //       { text: 'Cancel' },
-  //       {
-  //         text: 'Exit',
-  //         handler: () => {
-  //           navigator['app'].exitApp();
-  //         }
-  //       }
-  //     ]
-  //   });
-  //   await alert.present();
-  // }
 
   async confirmLogout() {
     const alert = await this.alertCtrl.create({

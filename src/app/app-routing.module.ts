@@ -66,6 +66,11 @@ const routes: Routes = [
     path: 'unverified-user',
     loadChildren: () => import('./pages/unverified-user/unverified-user.module').then( m => m.UnverifiedUserPageModule)
   },
+  {
+    path: 'admin',
+    loadChildren: () => import('./admin/admin.module').then( m => m.AdminPageModule),
+    canActivate:[AdminGuard, VerifiedGuard]
+  },
 
 ];
 
