@@ -1,4 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { SpreadsheetService } from '../services/spreadsheet.service';
+
+
+const dummyData = [
+  { name: "Chris", message: "Hi Chris!" },
+  { name: "Steve", message: "Proof of Concept" }
+];
 
 @Component({
   selector: 'app-admin',
@@ -7,13 +14,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AdminPage implements OnInit {
 
-  constructor() { }
+  constructor(private sheetService: SpreadsheetService) { }
 
   ngOnInit() {
   }
 
-  getSpreadSheet() {
-    console.log('TODO: excelerate the data');
+  getSpreadSheet(data = dummyData) {
+    return this.sheetService.getSpreadSheetUrl(data);
   }
 
 }
