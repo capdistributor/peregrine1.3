@@ -8,7 +8,7 @@ import { LoginPageRoutingModule } from './login-routing.module';
 
 import { LoginPage } from './login.page';
 
-import { AuthModule } from 'src/app/shared-modules/auth.module';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 
 
@@ -19,7 +19,7 @@ import { AuthModule } from 'src/app/shared-modules/auth.module';
     ReactiveFormsModule,
     IonicModule,
     LoginPageRoutingModule,
-    AuthModule
+    SharedModule
   ],
   declarations: [LoginPage]
 })

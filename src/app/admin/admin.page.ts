@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SpreadsheetService } from '../services/spreadsheet.service';
+import { AngularFirestore } from '@angular/fire/firestore';
 
 
 const dummyData = [
@@ -14,7 +15,10 @@ const dummyData = [
 })
 export class AdminPage implements OnInit {
 
-  constructor(private sheetService: SpreadsheetService) { }
+  constructor(
+    private sheetService: SpreadsheetService,
+    private firestore: AngularFirestore
+  ) { }
 
   ngOnInit() {
   }

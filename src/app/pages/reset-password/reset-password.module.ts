@@ -8,7 +8,7 @@ import { ResetPasswordPageRoutingModule } from './reset-password-routing.module'
 
 import { ResetPasswordPage } from './reset-password.page';
 
-import { AuthModule } from 'src/app/shared-modules/auth.module';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 @NgModule({
   imports: [
@@ -16,7 +16,7 @@ import { AuthModule } from 'src/app/shared-modules/auth.module';
     FormsModule,
     IonicModule,
     ResetPasswordPageRoutingModule,
-    AuthModule
+    SharedModule
   ],
   declarations: [ResetPasswordPage]
 })
