@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import * as XLSX from 'xlsx';
 import * as FileSaver from  'file-saver'
 import { DateService } from './date.service';
+import { DatabaseService } from './database.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,10 +10,11 @@ import { DateService } from './date.service';
 export class SpreadsheetService {
 
   constructor(
-    private dateService: DateService
+    private dateService: DateService,
+    private dbService: DatabaseService
   ) { }
 
-
+  // TODO: loop over dbService.userProfilesCollection$ and use dbService.getDriverMonthlyLogList to fetch sheet data. Massage as necessary.
 
   getSpreadSheetUrl(data: any) {
     const sheet = XLSX.utils.json_to_sheet(data);
