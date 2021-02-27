@@ -91,6 +91,7 @@ export class LogService {
 }
 
 export interface Log {
+  id?: string;
   date: string;
   notes: string;
   [key: string]: number | string;

@@ -50,3 +50,5 @@ export interface Setting {
   name: string;
   active: boolean;
 }
+
+export const ACTIVITY_IDS = Object.freeze(Object.keys(SETTINGS));

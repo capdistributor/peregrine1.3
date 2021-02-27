@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { SpreadsheetService } from '../services/spreadsheet.service';
 import { DatabaseService } from '../services/database.service';
-import { combineLatest, Subject } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
+import { combineLatest, of, Subject } from 'rxjs';
+import { debounceTime, distinct, mergeMap, switchMap, tap } from 'rxjs/operators';
 
 
 const dummyData = [
@@ -18,6 +18,8 @@ const dummyData = [
 export class AdminPage implements OnInit {
   spreadSheetClicked$ = new Subject();
 
+  working = false;
+
   constructor(
     private sheetService: SpreadsheetService,
     private dbService: DatabaseService
@@ -26,24 +28,28 @@ export class AdminPage implements OnInit {
   ngOnInit() {
     this.spreadSheetClicked$
       .pipe(
+        tap(() => this.working = true),
         switchMap(() => this.dbService.userProfilesColletion$),
-        tap(stuff => console.log('stuff', stuff)),
-        switchMap(userProfiles => {
-          const myMan = userProfiles.find(user => user.fullName
-            .toLowerCase()
-            .includes('avery raabe'));
+        mergeMap(userProfiles => {
+          const ids = userProfiles.map(user => user.id);
             
-          return this.dbService.getDriverMonthlyLoglist(myMan.id);
-        })
+          return combineLatest([
+            of(userProfiles),
+            this.dbService.getDriversMonthlyLogListById(ids)
+          ]);
+        }),
+        distinct()
       )
-      .subscribe((result) => {
-        console.log('result:', result)
+      .subscribe(([userProfiles, logListsById]) => {
+        const workbook = this.sheetService.prepareWorkbookData(userProfiles, logListsById);
+
+        this.sheetService.downloadWorkbook(workbook);
+        this.working = false;
       });
   }
 
   getSpreadSheet(data = dummyData) {
     this.spreadSheetClicked$.next();
-    // return this.sheetService.getSpreadSheetUrl(data);
   }
 
 }
