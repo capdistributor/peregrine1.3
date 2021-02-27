@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import * as XLSX from 'xlsx';
 import * as FileSaver from  'file-saver'
 import { DateService } from './date.service';
-import { DatabaseService, LogListById, UserProfile } from './database.service';
+import { LogListById, UserProfile } from './database.service';
 import { Log } from './log.service';
 import { ACTIVITY_IDS, SETTINGS } from '../pages/settings/_settings.masterlist';
 

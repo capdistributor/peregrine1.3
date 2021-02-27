@@ -16,7 +16,7 @@ export class DatabaseService {
     private dateService: DateService
   ) {}
 
-  get userProfilesColletion$() {
+  get userProfilesCollection$() {
     return this.getCollectionSnapshot('userProfile').pipe(
       take(1),
       shareReplay(1)
@@ -26,6 +26,7 @@ export class DatabaseService {
   getDriverMonthlyLoglist(id: string, date = new Date()) {
     const firstOfMonth = this.dateService.longFormat(startOfMonth(date));
     const lastOfMonth = this.dateService.longFormat(endOfMonth(date));
+    
     return this.firestore
       .collection('userProfile')
       .doc(id)

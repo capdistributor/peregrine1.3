@@ -6,15 +6,64 @@
 
 <ion-content>
   <ion-card>
+    <ion-card-header>
+      <ion-card-subtitle>Memos</ion-card-subtitle>
+      <ion-card-title>Memo Blaster</ion-card-title>
+    </ion-card-header>
+    <p>
+      Use the Memo Blaster to send information to drivers.
+    </p>
     <ion-button expand="block" size="large" color="danger" routerLink="/create-memo">
       Memo Blaster
     </ion-button>
-    <ion-button expand="block" size="large" color="secondary" (click)="getSpreadSheet()">
-      Excel-erate the Data
+  </ion-card>
+
+  <ion-card class="spreadsheet-card">
+    <ion-card-header>
+      <ion-card-subtitle>Excel Spreadsheet</ion-card-subtitle>
+      <ion-card-title>Driver Log Report</ion-card-title>
+    </ion-card-header>
+    <p>
+      Select a month and year to generate and download a Driver Log Report in .xlsx format.
+    </p>
+
+    <ion-item-group>
+      <ion-item>
+        <ion-label>Month</ion-label>
+        <ion-select [(ngModel)]="selectedMonth">
+          <ion-select-option
+            *ngFor="let month of months; let i = index"
+            [value]="i">
+            {{month}}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Year</ion-label>
+        <ion-select [(ngModel)]="selectedYear">
+          <ion-select-option
+            *ngFor="let year of years"
+            [value]="year">
+            {{year}}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+    </ion-item-group>
+
+    <ion-button
+      expand="block"
+      size="large"
+      color="secondary"
+      [disabled]="working"
+      (click)="getSpreadSheet()">
+      Get Driver Report
+      <div *ngIf="working" class="spinner-wrapper">
+        <img class="spinner" src="assets/spinner.svg" />
+      </div>
     </ion-button>
-    <ion-item>
-      TODO: loading spinner. <br>
-      Working: {{ working }}
-    </ion-item>
+
   </ion-card>
 </ion-content>
+
+

@@ -2,6 +2,39 @@ ion-card {
   padding: 1rem;
 }
 
-ion-button:first-of-type {
+p {
+  margin: 1rem;
+}
+
+ion-button {
   margin-bottom: 1rem;
+}
+
+ion-item-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.spinner-wrapper {
+  margin-left: 1rem;
+}
+
+.spinner {
+  height: 2rem;
+  width: 2rem;
+  animation-name: spin;
+  animation-duration: 700ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear; 
+}
+
+@keyframes spin {
+  from {
+    transform:rotate(0deg);
+  }
+  to {
+    transform:rotate(360deg);
+  }
 }
