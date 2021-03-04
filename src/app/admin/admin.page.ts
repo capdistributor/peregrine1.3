@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SpreadsheetService } from '../services/spreadsheet.service';
 import { DatabaseService } from '../services/database.service';
 import { combineLatest, of, Subject } from 'rxjs';
-import { distinct, mergeMap, switchMap, tap } from 'rxjs/operators';
+import { distinct, first, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { getMonth, getYear } from 'date-fns';
 
 
@@ -31,21 +31,23 @@ export class AdminPage implements OnInit {
       .pipe(
         tap(() => (this.working = true)),
         switchMap(() => this.dbService.userProfilesCollection$),
+        first(),
         mergeMap((userProfiles) => {
-          console.log('userProfiles', userProfiles);
+          console.log(`preparing report for ${userProfiles.length} drivers`);
           const ids = userProfiles.map((user) => user.id);
           const date = new Date(this.selectedYear, this.selectedMonth);
           return combineLatest([
             of(userProfiles),
             this.dbService.getDriversMonthlyLogListById(ids, date),
+            of(date)
           ]);
-        }),
-        distinct()
+        })
       )
-      .subscribe(([userProfiles, logListsById]) => {
+      .subscribe(([userProfiles, logListsById, date]) => {
         const workbook = this.sheetService.prepareWorkbookData(
           userProfiles,
-          logListsById
+          logListsById,
+          date
         );
 
         this.sheetService.downloadWorkbook(workbook);

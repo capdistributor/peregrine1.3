@@ -3,20 +3,24 @@ import * as XLSX from 'xlsx';
 import * as FileSaver from  'file-saver'
 import { DateService } from './date.service';
 import { LogListById, UserProfile } from './database.service';
-import { Log } from './log.service';
+import { Log, LogService } from './log.service';
 import { ACTIVITY_IDS, SETTINGS } from '../pages/settings/_settings.masterlist';
+import { getDaysInMonth, getMonth, getYear, isSameDay } from 'date-fns';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SpreadsheetService {
-  constructor(private dateService: DateService) {}
+  constructor(
+    private dateService: DateService,
+    private logService: LogService
+  ) {}
 
-  prepareWorkbookData(users: UserProfile[], logsById: LogListById) {
+  prepareWorkbookData(users: UserProfile[], logsById: LogListById, date = new Date()) {
     const sheetData = users.sort(sortUsersByCity).map((user) => {
       return {
         name: this.getSheetName(user),
-        sheet: this.prepareSpreadSheet(logsById[user.id]),
+        sheet: this.prepareSpreadSheet(logsById[user.id], date),
       }
     });
 
@@ -37,8 +41,9 @@ export class SpreadsheetService {
     );
   }
 
-  private prepareSpreadSheet(logList: Log[]) {
-    const orderedLogs = logList.map((log) => this.sortLogActivities(log));
+  private prepareSpreadSheet(logList: Log[], date: Date) {
+    const paddedList = this.padListWithEmptyLogs(logList, date);
+    const orderedLogs = paddedList.map((log) => this.sortLogActivities(log));
 
     return XLSX.utils.json_to_sheet(orderedLogs);
   }
@@ -60,16 +65,23 @@ export class SpreadsheetService {
     return `peregrine-express-report_${dateString}`;
   }
 
+  // orders activities into correct order (see _settings.master-list.ts SETTINGS)
   sortLogActivities(log: Log) {
     const orderedLog = new Map();
 
+    // Date first
     orderedLog.set('Date', this.dateService.shortFormat(log.date));
-
+    // then activities
     ACTIVITY_IDS.forEach((activity) => {
       const key = SETTINGS[activity].name;
       orderedLog.set(key, log[activity]);
-    });
 
+      // removes all those zeros from the spreasheet
+      if (orderedLog.get(key) === 0) {
+        orderedLog.set(key, null);
+      }
+    });
+    // Finally Notes
     orderedLog.set('Notes', log.notes);
 
     return Object.fromEntries(orderedLog);
@@ -83,6 +95,29 @@ export class SpreadsheetService {
     }
 
     return name;
+  }
+
+  private padListWithEmptyLogs(logList: Log[], date: Date): Log[] {
+    const daysInMonth = getDaysInMonth(date);
+    const month = getMonth(date);
+    const year = getYear(date);
+    const paddedList = [];
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const currentDate = new Date(year, month, day);
+      const foundLog = logList.find(log => isSameDay(currentDate, new Date(log.date)));
+
+      foundLog ? paddedList.push(foundLog) : paddedList.push(this.createEmptyLog(currentDate));
+    }
+
+    return paddedList;
+  }
+
+  private createEmptyLog(date: Date): Log {
+    const emptyLog = this.logService.createEmptyLog();
+    emptyLog.date = this.dateService.shortFormat(date);
+
+    return emptyLog;
   }
 }
 

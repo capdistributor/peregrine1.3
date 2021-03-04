@@ -10,6 +10,7 @@ import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 import { filter, map, switchMap, take } from 'rxjs/operators';
 import { DateService } from './date.service';
+import { ACTIVITY_IDS } from '../pages/settings/_settings.masterlist';
 
 @Injectable({
   providedIn: 'root',
@@ -83,6 +84,20 @@ export class LogService {
 
   deleteLog(logId: string): Promise<any> {
     return this.logListCollection.doc(logId).delete();
+  }
+
+  createEmptyLog(): Log {
+    const emptyLog = ACTIVITY_IDS.reduce((log, activity) => {
+        log[activity] = null;
+
+        return log;
+      }, {});
+
+    return {
+      date: new Date().toISOString(),
+      ...emptyLog,
+      notes: ''
+    };
   }
 
   private formatDate(date: Date) {

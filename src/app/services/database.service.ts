@@ -18,7 +18,6 @@ export class DatabaseService {
 
   get userProfilesCollection$() {
     return this.getCollectionSnapshot('userProfile').pipe(
-      take(1),
       shareReplay(1)
     ) as Observable<UserProfile[]>;
   }
@@ -26,7 +25,7 @@ export class DatabaseService {
   getDriverMonthlyLoglist(id: string, date = new Date()) {
     const firstOfMonth = this.dateService.longFormat(startOfMonth(date));
     const lastOfMonth = this.dateService.longFormat(endOfMonth(date));
-    
+
     return this.firestore
       .collection('userProfile')
       .doc(id)
@@ -38,9 +37,9 @@ export class DatabaseService {
   }
 
   getDriversMonthlyLogListById(ids: string[], date = new Date()) {
-    const actions = ids.reduce((map, id) => {
-      map.set(id, this.getDriverMonthlyLoglist(id, date))
-      return map;
+    const actions = ids.reduce((logMap, id) => {
+      logMap.set(id, this.getDriverMonthlyLoglist(id, date));
+      return logMap;
     }, new Map());
 
     return forkJoin(Object.fromEntries(actions)) as unknown as Observable<LogListById>;
