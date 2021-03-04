@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { forkJoin, Observable } from 'rxjs';
-import { map, shareReplay, take } from 'rxjs/operators';
+import { filter, map, shareReplay, take } from 'rxjs/operators';
 import { startOfMonth, endOfMonth } from 'date-fns';
 import { DateService } from './date.service';
 import { Log } from './log.service';
@@ -16,8 +16,10 @@ export class DatabaseService {
     private dateService: DateService
   ) {}
 
-  get userProfilesCollection$() {
+  get allUserProfiles$() {
     return this.getCollectionSnapshot('userProfile').pipe(
+      filter(userProfiles => userProfiles.length > 1),
+      take(1),
       shareReplay(1)
     ) as Observable<UserProfile[]>;
   }

@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SpreadsheetService } from '../services/spreadsheet.service';
 import { DatabaseService } from '../services/database.service';
 import { combineLatest, of, Subject } from 'rxjs';
-import { distinct, first, mergeMap, switchMap, tap } from 'rxjs/operators';
-import { getMonth, getYear } from 'date-fns';
+import { mergeMap, switchMap, tap } from 'rxjs/operators';
 
 
 const MONTHS = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -14,8 +13,8 @@ const MONTHS = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July',
   styleUrls: ['./admin.page.scss'],
 })
 export class AdminPage implements OnInit {
-  spreadSheetClicked$ = new Subject();
-  working = false;
+  runReport$ = new Subject();
+  reportRunning = false;
   readonly months = MONTHS;
   readonly years = this.getYears();
   selectedMonth = new Date().getMonth();
@@ -27,15 +26,14 @@ export class AdminPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.spreadSheetClicked$
+    this.runReport$
       .pipe(
-        tap(() => (this.working = true)),
-        switchMap(() => this.dbService.userProfilesCollection$),
-        first(),
+        tap(() => (this.reportRunning = true)),
+        switchMap(() => this.dbService.allUserProfiles$),
         mergeMap((userProfiles) => {
-          console.log(`preparing report for ${userProfiles.length} drivers`);
           const ids = userProfiles.map((user) => user.id);
           const date = new Date(this.selectedYear, this.selectedMonth);
+
           return combineLatest([
             of(userProfiles),
             this.dbService.getDriversMonthlyLogListById(ids, date),
@@ -44,6 +42,8 @@ export class AdminPage implements OnInit {
         })
       )
       .subscribe(([userProfiles, logListsById, date]) => {
+        console.log(`preparing report for ${userProfiles.length} drivers`);
+
         const workbook = this.sheetService.prepareWorkbookData(
           userProfiles,
           logListsById,
@@ -51,12 +51,12 @@ export class AdminPage implements OnInit {
         );
 
         this.sheetService.downloadWorkbook(workbook);
-        this.working = false;
+        this.reportRunning = false;
       });
   }
 
-  getSpreadSheet(data) {
-    this.spreadSheetClicked$.next();
+  getReport() {
+    this.runReport$.next();
   }
 
   private getYears() {

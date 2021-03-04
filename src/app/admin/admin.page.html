@@ -55,10 +55,10 @@
       expand="block"
       size="large"
       color="secondary"
-      [disabled]="working"
-      (click)="getSpreadSheet()">
+      [disabled]="reportRunning"
+      (click)="getReport()">
       Get Driver Report
-      <div *ngIf="working" class="spinner-wrapper">
+      <div *ngIf="reportRunning" class="spinner-wrapper">
         <img class="spinner" src="assets/spinner.svg" />
       </div>
     </ion-button>
