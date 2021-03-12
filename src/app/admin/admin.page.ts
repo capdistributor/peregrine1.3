@@ -30,7 +30,7 @@ export class AdminPage implements OnInit {
       .pipe(
         tap(() => (this.reportRunning = true)),
         switchMap(() => this.dbService.allUserProfiles$),
-        mergeMap((userProfiles) => {
+        mergeMap(userProfiles => {
           const ids = userProfiles.map((user) => user.id);
           const date = new Date(this.selectedYear, this.selectedMonth);
 
