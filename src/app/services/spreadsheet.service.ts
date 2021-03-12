@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import * as XLSX from 'xlsx';
-import * as FileSaver from  'file-saver'
+import * as FileSaver from 'file-saver';
 import { DateService } from './date.service';
 import { LogListById, UserProfile } from './database.service';
 import { Log, LogService } from './log.service';
 import { ACTIVITY_IDS, SETTINGS } from '../pages/settings/_settings.masterlist';
-import { getDaysInMonth, getMonth, getYear, isSameDay } from 'date-fns';
+import { getDaysInMonth, getMonth, getYear } from 'date-fns';
 
 @Injectable({
   providedIn: 'root',
@@ -42,8 +42,9 @@ export class SpreadsheetService {
   }
 
   private prepareSpreadSheet(logList: Log[], date: Date) {
-    const paddedList = this.padListWithEmptyLogs(logList, date);
-    const orderedLogs = paddedList.map((log) => this.sortLogActivities(log));
+    const logsByDateMap = this.mapLogsByDate(logList);
+    const fullMonthList = this.padLogListWithEmptyDays(logsByDateMap, date);
+    const orderedLogs = fullMonthList.map((log) => this.sortLogActivities(log));
 
     return XLSX.utils.json_to_sheet(orderedLogs);
   }
@@ -91,31 +92,52 @@ export class SpreadsheetService {
     let name = `${user.fullName} (${user.city})`;
 
     if (name.length > 30) {
-      name = `${name.substr(0, 27)}...`
+      name = `${name.substr(0, 27)}...`;
     }
 
     return name;
   }
 
-  private padListWithEmptyLogs(logList: Log[], date: Date): Log[] {
-    const daysInMonth = getDaysInMonth(date);
-    const month = getMonth(date);
-    const year = getYear(date);
-    const paddedList = [];
+  private padLogListWithEmptyDays(logsByDateMap: Map<string, Log>, date: Date): Log[] {
+    const paddedList = this.createEmptyMonthMap(date);
 
-    for (let day = 1; day <= daysInMonth; day++) {
-      const currentDate = new Date(year, month, day);
-      const foundLog = logList.find(log => isSameDay(currentDate, new Date(log.date)));
+    logsByDateMap.forEach((log, dateKey) => {
+      paddedList.set(dateKey, log);
+    });
 
-      foundLog ? paddedList.push(foundLog) : paddedList.push(this.createEmptyLog(currentDate));
-    }
 
-    return paddedList;
+    return Array.from(paddedList.values());
   }
 
-  private createEmptyLog(date: Date): Log {
+  private mapLogsByDate(LogList: Log[]): Map<string, Log> {
+    const logsByDateMap = new Map();
+
+    LogList.forEach(log => {
+      const shortDate = this.dateService.shortFormat(log.date);
+      logsByDateMap.set(shortDate, log);
+    });
+
+    return logsByDateMap;
+  }
+
+  private createEmptyMonthMap(date: Date): Map<string, Log> {
+    const emptyMonthMap = new Map();
+    const daysInMonth = getDaysInMonth(date);
+    const year = getYear(date);
+    const month: string | number = getMonth(date);
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const currentDate = this.dateService.shortFormat(new Date(year, month, day));
+
+      emptyMonthMap.set(currentDate, this.createEmptyLog(currentDate));
+    }
+
+    return emptyMonthMap;
+  }
+
+  private createEmptyLog(date: string): Log {
     const emptyLog = this.logService.createEmptyLog();
-    emptyLog.date = this.dateService.shortFormat(date);
+    emptyLog.date = date;
 
     return emptyLog;
   }
@@ -126,4 +148,4 @@ function sortUsersByCity(a, b) {
     return 0;
   }
   return a.city < b.city ? -1 : 1;
-};
+}
